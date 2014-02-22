@@ -1,0 +1,15 @@
+﻿rrrrrrrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrRrrrrrrrrrrrrrrr
+rrrrrrrrR#rrrrrrrrrrrrrrr
+rrrrrrrr.#rrrrrrrrRrrrrrr
+rrrrrrrR##rrrrrrRR#rRRrrr
+rrrrrrr..#RRrrrr..#r..rrr
+rrrrrrr..#..rrrr..#r..rrr
+rrrrrrR###..rRRR###r..rrr
+rrrrrr...#..r.....#r..rrr
+rrrrrr...#..r.....#r..rrr
+rrrrrR######R#....#r..rrR
+rrrrr.............#r..rr.
+2rrrr.............#r..rrX
+RRRRR##############R##RR#
