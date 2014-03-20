@@ -16,6 +16,8 @@ using Microsoft.Xna.Framework.Audio;
 using System.IO;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
+
 
 namespace Platformer
 {
@@ -24,6 +26,8 @@ namespace Platformer
     // conditions as well as scoring.
     class Level : IDisposable
     {
+        public static ContentManager LibContent;
+
         // Physical structure of the level.
         private Tile[,] tiles;
         private Texture2D[] layers;
@@ -64,6 +68,7 @@ namespace Platformer
 
         #region Loading
 
+        
         // Constructs a new level.
         /// <param name="serviceProvider">
         /// The service provider that will be used to construct a ContentManager.
@@ -95,32 +100,39 @@ namespace Platformer
             LoadTiles(fileStream);
         }
 
-        // Iterates over every tile in the structure file and loads its
-        // appearance and behavior. This method also validates that the
-        // file is well-formed with a player start point, exit, etc.
+        // Reads the JSON file made from Tiled and creates a new LevelData instance from
+        // that. Then loads all of the tiles into the game.
         /// <param name="fileStream">
-        /// A stream containing the tile data.
+        /// The Stream for the JSON file for whichever level we're on
         /// </param>
         private void LoadTiles(Stream fileStream)
         {
-            // Load the level and ensure all of the lines are the same length.
             int width;
-            List<string> lines = new List<string>();
+            int height; 
+            List<int> tileNums = null;
+
             using (StreamReader reader = new StreamReader(fileStream))
             {
-                string line = reader.ReadLine();
-                width = line.Length;
-                while (line != null)
-                {
-                    lines.Add(line);
-                    if (line.Length != width)
-                        throw new Exception(String.Format("The length of line {0} is different from all preceeding lines.", lines.Count));
-                    line = reader.ReadLine();
+                String levelDataString = reader.ReadToEnd();
+
+                Downpour.LevelData.RootObject levelData = JsonConvert.DeserializeObject<Downpour.LevelData.RootObject>(levelDataString);
+
+                width = levelData.width;
+                height = levelData.height;
+                foreach (Downpour.LevelData.Layer layer in levelData.layers){
+                    tileNums = layer.data;
                 }
+
+                System.Diagnostics.Debug.WriteLine("width is: " + width);
+                System.Diagnostics.Debug.WriteLine("height is: " + height);
+
             }
 
             // Allocate the tile grid.
-            tiles = new Tile[width, lines.Count];
+            tiles = new Tile[width, height];
+
+            // Counter to go through the 
+            int count = 0;
 
             // Loop over every tile position,
             for (int y = 0; y < Height; ++y)
@@ -128,7 +140,8 @@ namespace Platformer
                 for (int x = 0; x < Width; ++x)
                 {
                     // to load each tile.
-                    char tileType = lines[y][x];
+                    int tileType = tileNums[count++];
+
                     tiles[x, y] = LoadTile(tileType, x, y);
                 }
             }
@@ -157,49 +170,70 @@ namespace Platformer
         /// The Y location of this tile in tile space.
         /// </param>
         /// <returns>The loaded tile.</returns>
-        private Tile LoadTile(char tileType, int x, int y)
+        private Tile LoadTile(int tileType, int x, int y)
         {
+            System.Diagnostics.Debug.WriteLine("tile num: " + tileType);
             switch (tileType)
             {
                 // Air without rain
-                case '.':
+                case 0:
+                    return LoadClearTile();
+
+                // Impassable block (standard platform) without rain
+                case 1:
+                    return LoadTile("BlockA0", TileCollision.Impassable, false);
+
+                // Impassable block (standard platform) with rain
+                case 2:
+                    return LoadTile("RainBlock", TileCollision.Impassable, false);
+                
+                // Part of fire -- Not currently used 
+                case 3:
+                    /*
+                     * DAVID!! DAVIDDD!! This will load the tile for the part of the fire, 
+                     * but not yet because it's not created yet. So right now it's loading a
+                     * blank tile
+                     */
+                    //return LoadTile("FirePart", TileCollision.Passable, false);
+                    return LoadClearTile();
+
+                // Power-up -- Not currently used 
+                case 4:
+                    /*
+                     * DAVID!! DAVIDDD!! This will load the tile for the power-up, 
+                     * but not yet because it's not created yet. So right now it's loading a
+                     * blank tile
+                     */
+                    //return LoadTile("FirePart", TileCollision.Passable, false);
                     return LoadClearTile();
 
                 // Exit
-                case 'X':
+                case 5:
                     return LoadExitTile(x, y);
 
                 // Air with rain
-                case 'r':
+                case 6:
                     return LoadRainTile();
 
+                // Player start point without rain
+                case 7:
+                    return LoadStartTile(x, y);
+
                 // Floating platform--Not currently used
-                case '-':
+                case 8:
                     return LoadTile("Platform", TileCollision.Platform, false);
 
                 // Platform block--Not currently used
-                case '~':
+                case 9:
                     return LoadTile("BlockA0", TileCollision.Platform, false);
 
                 // Passable block--Not currently used
-                case ':':
+                case 10:
                     return LoadTile("BlockA0", TileCollision.Passable, false);
-
-                // Player start point without rain
-                case '1':
-                    return LoadStartTile(x, y);
                 
                 // Player start point with rain
-                case '2':
+                case 11:
                     return LoadStartTileRain(x, y);
-
-                // Impassable block (standard platform) without rain
-                case '#':
-                    return LoadTile("BlockA0", TileCollision.Impassable, false);
-                
-                // Impassable block (standard platform) with rain
-                case 'R':
-                    return LoadTile("RainBlock", TileCollision.Impassable, false);
 
                 // Unknown tile type character
                 default:

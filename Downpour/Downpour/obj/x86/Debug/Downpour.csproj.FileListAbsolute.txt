@@ -60,3 +60,6 @@ C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\OpenTK.dll
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Tao.Sdl.dll
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.csprojResolveAssemblyReference.cache
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.g.resources
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\0.json
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Newtonsoft.Json.dll

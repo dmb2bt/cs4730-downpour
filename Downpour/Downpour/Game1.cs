@@ -147,7 +147,7 @@ namespace Downpour
                 level.Dispose();
 
             // Load the level.
-            string levelPath = string.Format("{0}/{1}.txt", Content.RootDirectory, levelIndex);
+            string levelPath = string.Format("{0}/{1}.json", Content.RootDirectory, levelIndex);
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
                 level = new Platformer.Level(Services, fileStream, levelIndex);
         }
