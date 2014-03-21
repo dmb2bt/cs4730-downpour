@@ -32,7 +32,7 @@ namespace Downpour
 
         // Meta-level game state.
         private int levelIndex = -1;
-        private Platformer.Level level;
+        private Level level;
         private bool wasContinuePressed;
 
         // We store our input states so that we only poll once per frame,
@@ -47,13 +47,14 @@ namespace Downpour
         // levels in our content are 0-based and that all numbers under this constant
         // have a level file present. This allows us to not need to check for the file
         // or handle exceptions, both of which can add unnecessary time to level loading.
-        private const int numberOfLevels = 5;
+        private const int numberOfLevels = 1;
 
         // Constructor--note that all content should be in the Content directory
         public Game1()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 640;
             Content.RootDirectory = "Content";
 
         }
@@ -149,7 +150,7 @@ namespace Downpour
             // Load the level.
             string levelPath = string.Format("{0}/{1}.json", Content.RootDirectory, levelIndex);
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
-                level = new Platformer.Level(Services, fileStream, levelIndex);
+                level = new Level(Services, fileStream, levelIndex);
         }
 
         // Starts level over if player hits spacebar.  This feature should probably be removed at some point.
@@ -165,13 +166,9 @@ namespace Downpour
         {
             graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
-
             level.Draw(gameTime, spriteBatch);
 
             DrawHud();
-
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -179,6 +176,7 @@ namespace Downpour
         // Draws the overlay if player reaches exit, wins, or dies
         private void DrawHud()
         {
+            spriteBatch.Begin();
             Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
             Vector2 center = new Vector2(titleSafeArea.X + titleSafeArea.Width / 2.0f,
                                         titleSafeArea.Y + titleSafeArea.Height / 2.0f);
@@ -203,7 +201,7 @@ namespace Downpour
                 Vector2 statusSize = new Vector2(status.Width, status.Height);
                 spriteBatch.Draw(status, center - statusSize / 2, Color.White);
             }
+            spriteBatch.End();
         }
-
     }
 }

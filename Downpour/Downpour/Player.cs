@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace Platformer
+namespace Downpour 
 {
 
     class Player
@@ -55,6 +55,9 @@ namespace Platformer
         }
         Vector2 velocity;
 
+        private float speedMultiplier = 1.0f;
+        private const float speedMultiplierStep = 0.1f;
+
         // Constants for controlling horizontal movement
         private const float MoveAcceleration = 11500.0f;
         private const float MaxMoveSpeed = 800.0f;
@@ -71,6 +74,8 @@ namespace Platformer
         // Gamepad input configuration
         private const float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
+
+        private const bool DEBUG_NO_RAIN_DAMAGE = false;
 
         // Default starting life is set in Level.cs at 2000
         public int Life
@@ -209,7 +214,7 @@ namespace Platformer
                 keyboardState.IsKeyDown(Keys.Left) ||
                 keyboardState.IsKeyDown(Keys.A))
             {
-                movement = -1.0f;
+                movement = -1.0f * speedMultiplier;
             }
 
             // Move right
@@ -217,7 +222,7 @@ namespace Platformer
                      keyboardState.IsKeyDown(Keys.Right) ||
                      keyboardState.IsKeyDown(Keys.D))
             {
-                movement = 1.0f;
+                movement = 1.0f * speedMultiplier;
             }
 
             // Check if the player wants to jump.
@@ -380,12 +385,12 @@ namespace Platformer
             }
 
             // Take damage from rain.
-            if (rainedOn)
+            if (rainedOn && !DEBUG_NO_RAIN_DAMAGE)
             {
                 this.life -= this.rainLevel;
                 if (this.life <= 0)
                 {
-                    OnKilled();
+                   OnKilled();
                 }
             }
 
@@ -402,6 +407,11 @@ namespace Platformer
         {
             // Should the player freeze here?
             // Right now they can continue to move after finishing the level.
+        }
+
+        public void incrementSpeedMultiplier()
+        {
+            speedMultiplier += speedMultiplierStep;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

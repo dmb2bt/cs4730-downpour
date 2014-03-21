@@ -11,7 +11,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Platformer
+namespace Downpour 
 {
     // Controls playback of an Animation.
     struct AnimationPlayer

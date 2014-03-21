@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 
 
-namespace Platformer
+namespace Downpour
 {
     // A uniform grid of tiles.
     // The level owns the player and controls the game's win and lose
@@ -30,7 +30,7 @@ namespace Platformer
 
         // Physical structure of the level.
         private Tile[,] tiles;
-        private Texture2D[] layers;
+        private Layer[] layers;
         // The layer which entities are drawn on top of.
         private const int EntityLayer = 1;
 
@@ -41,6 +41,9 @@ namespace Platformer
         }
         static Player player;
 
+        private List<FirePiece> firePieces = new List<FirePiece>();
+        private List<SpeedFruit> powerups = new List<SpeedFruit>();
+        
         // Key locations in the level.
         private Vector2 start;
         private Point exit = InvalidPosition;
@@ -50,6 +53,7 @@ namespace Platformer
         int lastRain;
 
         // Level game state.
+        private float cameraPosition;
         private Random random = new Random(354668); // Arbitrary, but constant seed
 
         public bool ReachedExit
@@ -87,9 +91,9 @@ namespace Platformer
             // Load background layer textures. All levels must
             // use the same backgrounds and only use the left-most part of them.
             // Currently, the background has two layers, blank white behind rain2
-            layers = new Texture2D[2];
-            layers[0] = Content.Load<Texture2D>("clear.png");
-            layers[1] = Content.Load<Texture2D>("rain2.png");
+            layers = new Layer[2];
+            layers[0] = new Layer(Content, "clear", 1.0f);
+            layers[1] = new Layer(Content, "rain2", 1.0f);
 
             // Initialize the player with 2000 life if this is the first level
             if (player == null)
@@ -115,7 +119,7 @@ namespace Platformer
             {
                 String levelDataString = reader.ReadToEnd();
 
-                Downpour.LevelData.RootObject levelData = JsonConvert.DeserializeObject<Downpour.LevelData.RootObject>(levelDataString);
+                LevelData.RootObject levelData = JsonConvert.DeserializeObject<LevelData.RootObject>(levelDataString);
 
                 width = levelData.width;
                 height = levelData.height;
@@ -194,8 +198,8 @@ namespace Platformer
                      * but not yet because it's not created yet. So right now it's loading a
                      * blank tile
                      */
-                    //return LoadTile("FirePart", TileCollision.Passable, false);
-                    return LoadClearTile();
+                    return LoadFirePieceTile(x, y);
+                    //return LoadTile("FirePiece", TileCollision.Passable, false);
 
                 // Power-up -- Not currently used 
                 case 4:
@@ -205,7 +209,8 @@ namespace Platformer
                      * blank tile
                      */
                     //return LoadTile("FirePart", TileCollision.Passable, false);
-                    return LoadClearTile();
+                    //return LoadClearTile();
+                    return LoadFruitTile(x, y);
 
                 // Exit
                 case 5:
@@ -296,6 +301,22 @@ namespace Platformer
             return LoadTile("Exit", TileCollision.Passable, false);
         }
 
+        private Tile LoadFirePieceTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            firePieces.Add(new FirePiece(this, new Vector2(position.X, position.Y)));
+
+            return LoadTile("rain0", TileCollision.Passable, false);
+        }
+
+        private Tile LoadFruitTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            powerups.Add(new SpeedFruit(this, new Vector2(position.X, position.Y)));
+
+            return LoadRainTile();
+        }
+
         // Unloads the level content.
         public void Dispose()
         {
@@ -366,6 +387,8 @@ namespace Platformer
             else
             {
                 Player.Update(gameTime,keyboardState,gamePadState);
+                UpdateFirePieces(gameTime);
+                UpdatePowerUps(gameTime);
 
                 // Falling off the bottom of the level kills the player.
                 if (Player.BoundingRectangle.Top >= Height * Tile.Height)
@@ -382,6 +405,39 @@ namespace Platformer
             }           
         }
 
+        private void UpdateFirePieces(GameTime gameTime)
+        {
+            for (int i = 0; i < firePieces.Count; ++i)
+            {
+                FirePiece firepiece = firePieces[i];
+
+                firepiece.Update(gameTime);
+
+                if (firepiece.BoundingCircle.Intersects(Player.BoundingRectangle))
+                {
+                    firePieces.RemoveAt(i--);
+                    OnFirePieceCollected(firepiece, Player);
+                }
+            }
+        }
+
+        private void UpdatePowerUps(GameTime gameTime)
+        {
+            for (int i = 0; i < powerups.Count; ++i)
+            {
+                SpeedFruit powerup = powerups[i];
+
+                powerup.Update(gameTime);
+
+                if (powerup.BoundingCircle.Intersects(Player.BoundingRectangle))
+                {
+                    powerups.RemoveAt(i--);
+                    OnPowerUpCollected(powerup, Player);
+                }
+            }
+        }
+
+
         // Called when the player is killed.
         private void OnPlayerKilled()
         {
@@ -391,10 +447,27 @@ namespace Platformer
         // Called when the player reaches the level's exit.
         private void OnExitReached()
         {
-            Player.OnReachedExit();
-            reachedExit = true;
+            if (firePieces.Count == 0)
+            {
+                Player.OnReachedExit();
+                reachedExit = true;
+            }
             
         }
+
+        private void OnFirePieceCollected(FirePiece firepiece, Player collectedBy)
+        {
+            // TODO: Need to show piece collected
+            firepiece.OnCollected(collectedBy);
+        }
+
+        private void OnPowerUpCollected(SpeedFruit powerup, Player collectedBy)
+        {
+            // TODO: Need to do some animation or sound for pick up
+            collectedBy.incrementSpeedMultiplier();
+            powerup.OnCollected(collectedBy);
+        }
+
 
         // Restores the player to the starting point to try the level again.
         public void StartNewLife()
@@ -409,41 +482,61 @@ namespace Platformer
         // Draw everything in the level from background to foreground.
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin();
             // Update the background to match the rain level
             if (lastRain != player.rainLevel)
             {
-                // This should probably not be loading content in the Draw method...
-                layers[1] = Content.Load<Texture2D>("rain" + player.rainLevel + ".png");
+               // This should probably not be loading content in the Draw method...
+                layers[1].Texture = Content.Load<Texture2D>("rain" + player.rainLevel + ".png");
             }
             lastRain = player.rainLevel;
             
             // Draw background up to entity layer
             for (int i = 0; i <= EntityLayer; ++i)
-                spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
+                layers[i].Draw(spriteBatch, cameraPosition);
+            spriteBatch.End();
 
+            ScrollCamera(spriteBatch.GraphicsDevice.Viewport);
+            Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, cameraTransform);
             // Draw tiles
             DrawTiles(spriteBatch);
 
             // Draw player
             Player.Draw(gameTime, spriteBatch);
 
+            // Draw firepieces
+            foreach (FirePiece piece in firePieces)
+                piece.Draw(gameTime, spriteBatch);
+
+            foreach (SpeedFruit powerup in powerups)
+                powerup.Draw(gameTime, spriteBatch);
+
+            spriteBatch.End();
+
+            spriteBatch.Begin();
             // Draw background past entity layer
             for (int i = EntityLayer + 1; i < layers.Length; ++i)
-                spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
+                layers[i].Draw(spriteBatch, cameraPosition);
 
             // Draw life bar
             int life = player.Life;
             Rectangle lifeBar = new Rectangle(20, 20, life / 4, 20);
-            spriteBatch.Draw(layers[0], lifeBar, Color.Red);
+            spriteBatch.Draw(layers[0].Texture, lifeBar, Color.Red);
 
+            spriteBatch.End();
         }
 
         public void DrawTiles(SpriteBatch spriteBatch)
         {
+            // Calculate the visible range of tiles
+            int left = (int) Math.Floor(cameraPosition / Tile.Width);
+            int right = left + spriteBatch.GraphicsDevice.Viewport.Width / Tile.Width;
+            right = Math.Min(right, Width - 1);
             // For each tile position
             for (int y = 0; y < Height; ++y)
             {
-                for (int x = 0; x < Width; ++x)
+                for (int x = left; x < right; ++x)
                 {
                     // If there is a visible tile in that position
                     Texture2D texture = tiles[x, y].Texture;
@@ -455,6 +548,26 @@ namespace Platformer
                     }
                 }
             }
+        }
+
+        private void ScrollCamera(Viewport viewport) {
+            const float ViewMargin = 0.35f;
+
+            // Calculate the edges of the screen
+            float marginWidth = viewport.Width * ViewMargin;
+            float marginLeft = cameraPosition + marginWidth;
+            float marginRight = cameraPosition + viewport.Width - marginWidth;
+
+            // Calculate how far to scroll when the player is near the edges of the screen.
+            float cameraMovement = 0.0f; 
+            if (Player.Position.X < marginLeft)
+                cameraMovement = Player.Position.X - marginLeft;
+            else if (Player.Position.X > marginRight)
+                cameraMovement = Player.Position.X - marginRight;
+
+            // Update the camera position, but prevent scrolling off the ends of the level
+            float maxCameraPosition = Tile.Width * Width - viewport.Width;
+            cameraPosition = MathHelper.Clamp(cameraPosition + cameraMovement, 0.0f, maxCameraPosition);
         }
 
         #endregion

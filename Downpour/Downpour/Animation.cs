@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Platformer
+namespace Downpour
 {
     // Represents an animated texture.
     // Currently, this class assumes that each frame of animation is
