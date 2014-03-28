@@ -55,21 +55,26 @@ namespace Downpour
         }
         Vector2 velocity;
 
+<<<<<<< Updated upstream
         private float speedMultiplier = 1.0f;
         private const float speedMultiplierStep = 2.0f;
+=======
+        public float speedMultiplier = 1.0f;
+        public float speedMultiplierStep = 0.1f;
+>>>>>>> Stashed changes
 
         // Constants for controlling horizontal movement
-        private const float MoveAcceleration = 11500.0f;
-        private const float MaxMoveSpeed = 800.0f;
-        private const float GroundDragFactor = 0.48f;
-        private const float AirDragFactor = 0.58f;
+        public float MoveAcceleration = 11500.0f;
+        public float MaxMoveSpeed = 500.0f;
+        public float GroundDragFactor = 0.60f;
+        public float AirDragFactor = 0.50f;
 
         // Constants for controlling vertical movement
-        private const float MaxJumpTime = 3.0f;
-        private const float JumpLaunchVelocity = -4000.0f;
-        private const float GravityAcceleration = 3600.0f;
-        private const float MaxFallSpeed = 550.0f;
-        private const float JumpControlPower = 0.14f;
+        public float MaxJumpTime = 3.0f;
+        public float JumpLaunchVelocity = -900.0f;
+        public float GravityAcceleration = 3000.0f;
+        public float MaxFallSpeed = 600.0f;
+        public float JumpControlPower = 0.05f;
 
         // Gamepad input configuration
         private const float MoveStickScale = 1.0f;
@@ -243,6 +248,7 @@ namespace Downpour
                     keyboardState.IsKeyDown(Keys.Up) ||
                     keyboardState.IsKeyDown(Keys.W);
             }
+
         }
         bool pressed;
 
@@ -256,7 +262,7 @@ namespace Downpour
             // Base velocity is a combination of horizontal movement control and
             // acceleration downward due to gravity.
             velocity.X += movement * MoveAcceleration * elapsed;
-            velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
+            velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, JumpLaunchVelocity, MaxFallSpeed);
 
             velocity.Y = DoJump(velocity.Y, gameTime);
 
@@ -301,7 +307,7 @@ namespace Downpour
                 if (0.0f < jumpTime && jumpTime <= MaxJumpTime)
                 {
                     // Fully override the vertical velocity with a power curve that gives players more control over the top of the jump
-                    velocityY = JumpLaunchVelocity * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
+                    velocityY = JumpLaunchVelocity * 3 * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
                 }
                 else
                 {

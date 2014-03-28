@@ -39,7 +39,12 @@
     <Compile Include="AnimationPlayer.cs" />
     <Compile Include="Circle.cs" />
     <Compile Include="FirePiece.cs" />
+    <Compile Include="FontRenderer.cs" />
+    <Compile Include="FontSerializer.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="HUD.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Layer.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="LevelData.cs" />
@@ -52,6 +57,10 @@
     <Compile Include="Tile.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FarseerPhysicsXNA, Version=3.2.4051.29488, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Content\FarseerPhysicsXNA.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Content\Newtonsoft.Json.dll</HintPath>
@@ -99,6 +108,12 @@
     </Resource>
     <Content Include="Content\0.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\FarseerPhysicsXNA.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\theFont_0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Tiles\FirePiece.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -160,6 +175,12 @@
     <Content Include="Content\practice.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Content\Fonts\myfile.spritefont">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\theFont.fnt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

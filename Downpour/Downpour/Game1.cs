@@ -30,6 +30,16 @@ namespace Downpour
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        // The HUD (currently displays health and play-testing info)
+        private HUD hud;
+        private FontRenderer fontRenderer;
+
+        // A boolean for the play-testing mode
+        private bool playTesting;
+        private bool playTestingKeyPressing;
+        private bool minusPressing;
+        private bool plusPressing;
+
         // Meta-level game state.
         private int levelIndex = -1;
         private Level level;
@@ -79,7 +89,12 @@ namespace Downpour
             winOverlay = Content.Load<Texture2D>("you_win");
             winOverallOverlay = Content.Load<Texture2D>("you_win_overall");
             diedOverlay = Content.Load<Texture2D>("you_died");
-            // Use this.Content to load your game content here
+
+            hud = new HUD();
+            var fontFilePath = Path.Combine(Content.RootDirectory, "theFont.fnt");
+            var fontFile = FontLoader.Load(fontFilePath);
+            var fontTexture = Content.Load<Texture2D>("theFont_0.png");
+            fontRenderer = new FontRenderer(fontFile, fontTexture);
         }
 
         // UnloadContent will be called once per game and is the place to unload
@@ -108,6 +123,78 @@ namespace Downpour
             // Get all of our input states
             keyboardState = Keyboard.GetState();
             gamePadState = GamePad.GetState(PlayerIndex.One);
+
+            // Press Left Shift to bring up the play-testing screen
+            if (keyboardState.IsKeyDown(Keys.LeftShift)&&!playTestingKeyPressing)
+            {
+                playTesting = !playTesting;
+                playTestingKeyPressing = true;
+            }
+
+            if (keyboardState.IsKeyUp(Keys.LeftShift))
+            {
+                playTestingKeyPressing = false;
+            }
+
+            // Press a number along with the "-" key to decrease the variable that
+            // corresponds to that number
+            if (keyboardState.IsKeyDown(Keys.OemMinus)&&!minusPressing)
+            {
+                minusPressing = true;
+                if (keyboardState.IsKeyDown(Keys.D1))
+                    level.Player.MoveAcceleration -= 100;
+                if (keyboardState.IsKeyDown(Keys.D2))
+                    level.Player.MaxMoveSpeed-= 100;
+                if (keyboardState.IsKeyDown(Keys.D3))
+                    level.Player.GroundDragFactor -= 0.05f;
+                if (keyboardState.IsKeyDown(Keys.D4))
+                    level.Player.AirDragFactor -= 0.05f;
+                if (keyboardState.IsKeyDown(Keys.D5))
+                    level.Player.MaxJumpTime -= 0.1f;
+                if (keyboardState.IsKeyDown(Keys.D6))
+                    level.Player.JumpLaunchVelocity -= 100;
+                if (keyboardState.IsKeyDown(Keys.D7))
+                    level.Player.GravityAcceleration -= 100;
+                if (keyboardState.IsKeyDown(Keys.D8))
+                    level.Player.MaxFallSpeed -= 100;
+                if (keyboardState.IsKeyDown(Keys.D9))
+                    level.Player.JumpControlPower -= 0.05f;
+                if (keyboardState.IsKeyDown(Keys.D0))
+                    level.Player.speedMultiplierStep -= 0.05f;
+            }
+
+            // Press a number along with the "+" key to decrease the variable that
+            // corresponds to that number
+            if (keyboardState.IsKeyDown(Keys.OemPlus)&&!plusPressing)
+            {
+                plusPressing = true;
+                if (keyboardState.IsKeyDown(Keys.D1))
+                    level.Player.MoveAcceleration += 100;
+                if (keyboardState.IsKeyDown(Keys.D2))
+                    level.Player.MaxMoveSpeed += 100;
+                if (keyboardState.IsKeyDown(Keys.D3))
+                    level.Player.GroundDragFactor += 0.05f;
+                if (keyboardState.IsKeyDown(Keys.D4))
+                    level.Player.AirDragFactor += 0.05f;
+                if (keyboardState.IsKeyDown(Keys.D5))
+                    level.Player.MaxJumpTime += 0.1f;
+                if (keyboardState.IsKeyDown(Keys.D6))
+                    level.Player.JumpLaunchVelocity += 100;
+                if (keyboardState.IsKeyDown(Keys.D7))
+                    level.Player.GravityAcceleration += 100;
+                if (keyboardState.IsKeyDown(Keys.D8))
+                    level.Player.MaxFallSpeed += 100;
+                if (keyboardState.IsKeyDown(Keys.D9))
+                    level.Player.JumpControlPower += 0.05f;
+                if (keyboardState.IsKeyDown(Keys.D0))
+                    level.Player.speedMultiplierStep += 0.05f;
+            }
+
+            if (keyboardState.IsKeyUp(Keys.OemMinus))
+                minusPressing = false;
+            if (keyboardState.IsKeyUp(Keys.OemPlus))
+                plusPressing = false;
+            
 
             // Exit the game when back button or escape key is pressed.
             if ((gamePadState.Buttons.Back == ButtonState.Pressed) || (keyboardState.IsKeyDown(Keys.Escape)))
@@ -167,7 +254,7 @@ namespace Downpour
             graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             level.Draw(gameTime, spriteBatch);
-
+            //TODO delete? // hud.Draw(spriteBatch, fontRenderer);
             DrawHud();
 
             base.Draw(gameTime);
@@ -177,12 +264,13 @@ namespace Downpour
         private void DrawHud()
         {
             spriteBatch.Begin();
+
             Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
             Vector2 center = new Vector2(titleSafeArea.X + titleSafeArea.Width / 2.0f,
                                         titleSafeArea.Y + titleSafeArea.Height / 2.0f);
 
             Texture2D status = null;
-            
+
             // Choose the appropriate overlay
             if (level.ReachedExit)
             {
@@ -201,6 +289,35 @@ namespace Downpour
                 Vector2 statusSize = new Vector2(status.Width, status.Height);
                 spriteBatch.Draw(status, center - statusSize / 2, Color.White);
             }
+
+            if (playTesting)
+            {
+                fontRenderer.DrawText(spriteBatch, 50, 50, "(1) MoveAcceleration:");
+                fontRenderer.DrawText(spriteBatch, 50, 80, "(2) MaxMoveSpeed:");
+                fontRenderer.DrawText(spriteBatch, 50, 110, "(3) GroundDragFactor:");
+                fontRenderer.DrawText(spriteBatch, 50, 140, "(4) AirDragFactor:");
+                fontRenderer.DrawText(spriteBatch, 50, 170, "(5) MaxJumpTime:");
+                fontRenderer.DrawText(spriteBatch, 50, 200, "(6) JumpLaunchVelocity:");
+                fontRenderer.DrawText(spriteBatch, 50, 230, "(7) GravityAcceleration:");
+                fontRenderer.DrawText(spriteBatch, 50, 260, "(8) MaxFallSpeed:");
+                fontRenderer.DrawText(spriteBatch, 50, 290, "(9) JumpControlPower:");
+                fontRenderer.DrawText(spriteBatch, 50, 320, "(0) SpeedMultiplierStep:");
+
+                int offset = 350;
+
+                fontRenderer.DrawText(spriteBatch, offset, 50, level.Player.MoveAcceleration.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 80, level.Player.MaxMoveSpeed.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 110, level.Player.GroundDragFactor.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 140, level.Player.AirDragFactor.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 170, level.Player.MaxJumpTime.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 200, level.Player.JumpLaunchVelocity.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 230, level.Player.GravityAcceleration.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 260, level.Player.MaxFallSpeed.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 290, level.Player.JumpControlPower.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 320, level.Player.speedMultiplierStep.ToString());
+            }
+            
+
             spriteBatch.End();
         }
     }
