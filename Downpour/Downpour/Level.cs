@@ -24,7 +24,7 @@ namespace Downpour
     // A uniform grid of tiles.
     // The level owns the player and controls the game's win and lose
     // conditions as well as scoring.
-    class Level : IDisposable
+    public class Level : IDisposable
     {
         public static ContentManager LibContent;
 
@@ -42,7 +42,7 @@ namespace Downpour
         static Player player;
 
         private List<FirePiece> firePieces = new List<FirePiece>();
-        private List<SpeedFruit> powerups = new List<SpeedFruit>();
+        private List<PowerUp> powerups = new List<PowerUp>();
         
         // Key locations in the level.
         private Vector2 start;
@@ -210,7 +210,7 @@ namespace Downpour
                      */
                     //return LoadTile("FirePart", TileCollision.Passable, false);
                     //return LoadClearTile();
-                    return LoadFruitTile(x, y);
+                    return LoadSpeedFruitTile(x, y);
 
                 // Exit
                 case 5:
@@ -226,12 +226,11 @@ namespace Downpour
 
                 // Floating platform--Not currently used
                 case 8:
-                    return LoadTile("Platform", TileCollision.Platform, false);
+                    return LoadControlInvertFruitTile(x, y);
 
                 // Platform block--Not currently used
                 case 9:
-                    return LoadTile("BlockA0", TileCollision.Platform, false);
-
+                    return LoadUmbrellaFruitTile(x, y);
                 // Passable block--Not currently used
                 case 10:
                     return LoadTile("BlockA0", TileCollision.Passable, false);
@@ -309,10 +308,26 @@ namespace Downpour
             return LoadTile("rain0", TileCollision.Passable, false);
         }
 
-        private Tile LoadFruitTile(int x, int y)
+        private Tile LoadSpeedFruitTile(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new SpeedFruit(this, new Vector2(position.X, position.Y)));
+
+            return LoadRainTile();
+        }
+
+        private Tile LoadControlInvertFruitTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            powerups.Add(new ControlInvertFruit(this, new Vector2(position.X, position.Y)));
+
+            return LoadRainTile();
+        }
+
+        private Tile LoadUmbrellaFruitTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            powerups.Add(new UmbrellaFruit(this, new Vector2(position.X, position.Y)));
 
             return LoadRainTile();
         }
@@ -425,11 +440,11 @@ namespace Downpour
         {
             for (int i = 0; i < powerups.Count; ++i)
             {
-                SpeedFruit powerup = powerups[i];
+                PowerUp powerup = powerups[i];
 
                 powerup.Update(gameTime);
 
-                if (powerup.BoundingCircle.Intersects(Player.BoundingRectangle))
+                if (powerup.BoundingCircle().Intersects(Player.BoundingRectangle))
                 {
                     powerups.RemoveAt(i--);
                     OnPowerUpCollected(powerup, Player);
@@ -461,7 +476,7 @@ namespace Downpour
             firepiece.OnCollected(collectedBy);
         }
 
-        private void OnPowerUpCollected(SpeedFruit powerup, Player collectedBy)
+        private void OnPowerUpCollected(PowerUp powerup, Player collectedBy)
         {
             // TODO: Need to do some animation or sound for pick up
             powerup.OnCollected(collectedBy);
@@ -508,7 +523,7 @@ namespace Downpour
             foreach (FirePiece piece in firePieces)
                 piece.Draw(gameTime, spriteBatch);
 
-            foreach (SpeedFruit powerup in powerups)
+            foreach (PowerUp powerup in powerups)
                 powerup.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
@@ -522,6 +537,9 @@ namespace Downpour
             int life = player.Life;
             Rectangle lifeBar = new Rectangle(20, 20, life / 4, 20);
             spriteBatch.Draw(layers[0].Texture, lifeBar, Color.Red);
+            int umbrellaShield = player.UmbrellaLife;
+            Rectangle umbrellaShieldBar = new Rectangle(20, 40, umbrellaShield, 20);
+            spriteBatch.Draw(layers[0].Texture, umbrellaShieldBar, Color.Purple);
 
             spriteBatch.End();
         }

@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Downpour
 {
     // Controls the collision detection and response behavior of a tile.
-    enum TileCollision
+    public enum TileCollision
     {
         // A passable tile is one which does not hinder player motion at all.
         Passable = 0,

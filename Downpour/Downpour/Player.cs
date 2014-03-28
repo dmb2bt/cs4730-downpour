@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 namespace Downpour 
 {
 
-    class Player
+    public class Player
     {
         // Animations
         private Animation idleAnimation;
@@ -55,13 +55,8 @@ namespace Downpour
         }
         Vector2 velocity;
 
-<<<<<<< Updated upstream
-        private float speedMultiplier = 1.0f;
-        private const float speedMultiplierStep = 2.0f;
-=======
         public float speedMultiplier = 1.0f;
-        public float speedMultiplierStep = 0.1f;
->>>>>>> Stashed changes
+        public float speedMultiplierStep = 1.0f;
 
         // Constants for controlling horizontal movement
         public float MoveAcceleration = 11500.0f;
@@ -71,16 +66,19 @@ namespace Downpour
 
         // Constants for controlling vertical movement
         public float MaxJumpTime = 3.0f;
-        public float JumpLaunchVelocity = -900.0f;
+        public float JumpLaunchVelocity = -1100.0f;
         public float GravityAcceleration = 3000.0f;
         public float MaxFallSpeed = 600.0f;
         public float JumpControlPower = 0.05f;
 
         // Gamepad input configuration
-        private const float MoveStickScale = 1.0f;
+        private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
         private const bool DEBUG_NO_RAIN_DAMAGE = false;
+
+        // boolean for inverting keys 
+        private bool controlsInverted = false;
 
         // Default starting life is set in Level.cs at 2000
         public int Life
@@ -89,6 +87,13 @@ namespace Downpour
             set { life = value; }
         }
         private int life;
+
+        // Creates an Umbrella shield that decreases before player life
+        public int UmbrellaLife {
+            get { return umbrellaLife; }
+        }
+        private int umbrellaLife = 0;
+        private const int UMBRELLA_LIFE_MAX = 100;
 
         // Rain values
         bool rainedOn;
@@ -215,16 +220,20 @@ namespace Downpour
 
             // If any digital horizontal movement input is found, override the analog movement.
             // Move left
-            if ((gamePadState.ThumbSticks.Left.X < 0) ||
-                keyboardState.IsKeyDown(Keys.Left) ||
+            if ((gamePadState.ThumbSticks.Left.X < 0 && !controlsInverted) ||
+                (gamePadState.ThumbSticks.Left.X > 0 && controlsInverted) ||
+                (keyboardState.IsKeyDown(Keys.Left) && !controlsInverted) ||
+                (keyboardState.IsKeyDown(Keys.Right) && controlsInverted) ||
                 keyboardState.IsKeyDown(Keys.A))
             {
                 movement = -1.0f * speedMultiplier;
             }
 
             // Move right
-            else if ((gamePadState.ThumbSticks.Left.X > 0) ||
-                     keyboardState.IsKeyDown(Keys.Right) ||
+            else if ((gamePadState.ThumbSticks.Left.X > 0 && !controlsInverted) ||
+                     (gamePadState.ThumbSticks.Left.X < 0 && controlsInverted) ||
+                     (keyboardState.IsKeyDown(Keys.Right) && !controlsInverted) ||
+                     (keyboardState.IsKeyDown(Keys.Left) && controlsInverted) ||
                      keyboardState.IsKeyDown(Keys.D))
             {
                 movement = 1.0f * speedMultiplier;
@@ -393,10 +402,22 @@ namespace Downpour
             // Take damage from rain.
             if (rainedOn && !DEBUG_NO_RAIN_DAMAGE)
             {
-                this.life -= this.rainLevel;
-                if (this.life <= 0)
+                if (umbrellaLife > 0)
                 {
-                   OnKilled();
+                    umbrellaLife -= this.rainLevel;
+                }
+                else
+                {
+                    if (umbrellaLife < 0)
+                    {
+                        this.life += umbrellaLife;
+                        umbrellaLife = 0;
+                    }
+                    this.life -= this.rainLevel;
+                    if (this.life <= 0)
+                    {
+                        OnKilled();
+                    }
                 }
             }
 
@@ -418,6 +439,16 @@ namespace Downpour
         public void incrementSpeedMultiplier()
         {
             speedMultiplier += speedMultiplierStep;
+        }
+
+        public void invertControls()
+        {
+            controlsInverted = !controlsInverted;
+        }
+
+        public void setUmbrella()
+        {
+            umbrellaLife = UMBRELLA_LIFE_MAX;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
