@@ -100,3 +100,6 @@ C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.exe
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.pdb
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\practice.json
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\FirePiece.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\Fruit0.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\practice.json
