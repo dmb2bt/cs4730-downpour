@@ -464,7 +464,6 @@ namespace Downpour
         private void OnPowerUpCollected(SpeedFruit powerup, Player collectedBy)
         {
             // TODO: Need to do some animation or sound for pick up
-            collectedBy.incrementSpeedMultiplier();
             powerup.OnCollected(collectedBy);
         }
 

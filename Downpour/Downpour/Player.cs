@@ -56,7 +56,7 @@ namespace Downpour
         Vector2 velocity;
 
         private float speedMultiplier = 1.0f;
-        private const float speedMultiplierStep = 0.1f;
+        private const float speedMultiplierStep = 2.0f;
 
         // Constants for controlling horizontal movement
         private const float MoveAcceleration = 11500.0f;
