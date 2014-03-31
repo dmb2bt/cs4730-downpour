@@ -29,6 +29,7 @@ namespace Downpour
         public float FrameTime
         {
             get { return frameTime; }
+            set { frameTime = value; }
         }
         float frameTime;
 

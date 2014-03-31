@@ -56,7 +56,7 @@ namespace Downpour
         Vector2 velocity;
 
         public float speedMultiplier = 1.0f;
-        public float speedMultiplierStep = 1.0f;
+        public float speedMultiplierStep = 0.3f;
 
         // Constants for controlling horizontal movement
         public float MoveAcceleration = 11500.0f;
@@ -75,7 +75,7 @@ namespace Downpour
         private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
-        private const bool DEBUG_NO_RAIN_DAMAGE = false;
+        private const bool DEBUG_NO_RAIN_DAMAGE = true;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -146,8 +146,8 @@ namespace Downpour
         public void LoadContent()
         {
             // Load animated textures. (.1f is frame time)
-            idleAnimation = new Animation(Level.Content.Load<Texture2D>("Idle"), 0.1f, true);
-            runAnimation = new Animation(Level.Content.Load<Texture2D>("Run"), 0.1f, true);
+            idleAnimation = new Animation(Level.Content.Load<Texture2D>("new_idle"), 0.1f, true);
+            runAnimation = new Animation(Level.Content.Load<Texture2D>("left"), 0.15f, true);
 
             // Calculate bounds within texture size.
             int width = (int)(idleAnimation.FrameWidth * 0.35);
@@ -439,6 +439,8 @@ namespace Downpour
         public void incrementSpeedMultiplier()
         {
             speedMultiplier += speedMultiplierStep;
+            if (runAnimation.FrameTime > 0.1f)
+                runAnimation.FrameTime -= 0.02f;
         }
 
         public void invertControls()

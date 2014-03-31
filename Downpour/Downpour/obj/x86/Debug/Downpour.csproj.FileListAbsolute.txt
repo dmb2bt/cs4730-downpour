@@ -42,3 +42,7 @@ C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.g.resources
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.exe
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.pdb
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.csprojResolveAssemblyReference.cache
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\left.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\new_idle.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\right.png

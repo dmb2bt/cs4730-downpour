@@ -114,6 +114,16 @@
     <Content Include="Content\FarseerPhysicsXNA.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\left.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\new_idle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\right.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sketch poses.png" />
     <Content Include="Content\theFont_0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
