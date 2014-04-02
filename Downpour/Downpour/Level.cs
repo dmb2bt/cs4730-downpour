@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System.IO;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Input;
@@ -24,7 +25,7 @@ namespace Downpour
     // A uniform grid of tiles.
     // The level owns the player and controls the game's win and lose
     // conditions as well as scoring.
-    public class Level : IDisposable
+    public class Level : Screen, IDisposable
     {
         public static ContentManager LibContent;
 
@@ -51,6 +52,10 @@ namespace Downpour
         
         // Rain levels (1-3)
         int lastRain;
+
+        // Audio
+        public SoundEffect rainSound;
+        public bool hasRainStarted = false;
 
         // Level game state.
         private float cameraPosition;
@@ -100,8 +105,16 @@ namespace Downpour
             {
                 player = new Player(this, new Vector2(), 2000);
             }
-            
+            LoadContent();
             LoadTiles(fileStream);
+        }
+
+        public override void LoadContent()
+        {
+            Type = "Level";
+
+            // Load audio
+            rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
         }
 
         // Reads the JSON file made from Tiled and creates a new LevelData instance from
@@ -174,7 +187,7 @@ namespace Downpour
         /// The Y location of this tile in tile space.
         /// </param>
         /// <returns>The loaded tile.</returns>
-        private Tile LoadTile(int tileType, int x, int y)
+        public Tile LoadTile(int tileType, int x, int y)
         {
             System.Diagnostics.Debug.WriteLine("tile num: " + tileType);
             switch (tileType)
@@ -384,8 +397,16 @@ namespace Downpour
         #region Update
 
         // Updates all objects in the world and performs collision between them.
-        public void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
+        public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
+            if (!hasRainStarted)
+            {
+                var rain = rainSound.CreateInstance();
+                rain.IsLooped = true;
+                rain.Play();
+                hasRainStarted = true;
+            }
+
             // Pause while the player is dead or time is expired.
             if (!Player.IsAlive)
             {
@@ -487,7 +508,7 @@ namespace Downpour
         #region Draw
 
         // Draw everything in the level from background to foreground.
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
             // Update the background to match the rain level

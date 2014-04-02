@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Xna.Framework.Media;
 
 namespace Downpour 
 {
@@ -24,6 +25,9 @@ namespace Downpour
         private Animation runAnimation;
         private SpriteEffects flip = SpriteEffects.None;
         private AnimationPlayer sprite;
+
+        // Audio
+        public SoundEffect footstepSound;
 
         // Current level
         public Level Level
@@ -111,8 +115,9 @@ namespace Downpour
         bool rainedOn;
         public int rainLevel;
 
-        // Counter to update rain level periodically.
-        int count;
+        // Counters to update rain level periodically.
+        int rainCount;
+        int footstepCount;
 
         // Gets whether or not the player's feet are on the ground.
         public bool IsOnGround
@@ -151,7 +156,8 @@ namespace Downpour
             LoadContent();
             this.rainLevel = 2;
             Reset(position);
-            count = 0;
+            rainCount = 0;
+            footstepCount = 0;
         }
 
         // Loads the player sprite sheet and sounds.
@@ -160,6 +166,9 @@ namespace Downpour
             // Load animated textures. (.1f is frame time)
             idleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_idle"), 0.1f, true);
             runAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_left"), 0.1f, true);
+
+            // Load audio
+            footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
 
             // Calculate bounds within texture size.
             int width = (int)(idleAnimation.FrameWidth * 1.0);
@@ -185,6 +194,11 @@ namespace Downpour
             ApplyPhysics(gameTime);
             changeRain(gameTime);
 
+            if (movement != 0.0)
+            {
+                playFootstep(gameTime);
+            }
+
             // Choose the animation
             if (IsAlive)
             {
@@ -206,9 +220,9 @@ namespace Downpour
         // Updates the rain level every 50 updates.
         public void changeRain(GameTime gameTime)
         {
-            if (count > 50)
+            if (rainCount > 50)
             {
-                count = 0;
+                rainCount = 0;
 
                 // 50% chance rain goes up/down, staying within 1-3 range
                 Random random = new Random();
@@ -216,7 +230,19 @@ namespace Downpour
                 if (up == 1 && rainLevel != 3) rainLevel++;
                 else if (rainLevel != 1) rainLevel--;
             }
-            else count++;
+            else rainCount++;
+        }
+
+        public void playFootstep(GameTime gameTime)
+        {
+            if (footstepCount > 20 && isOnGround)
+            {
+                footstepCount = 0;
+                //var footstep = footstepSound.CreateInstance();
+                //footstep.Play();
+                footstepSound.Play();
+            }
+            else footstepCount++;
         }
 
         // Gets the current input from keyboard/controller

@@ -56,9 +56,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="Screen.cs" />
     <Compile Include="SpeedFruit.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="InvulnerabilityFruit.cs" />
+    <Compile Include="TitleScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FarseerPhysicsXNA, Version=3.2.4051.29488, Culture=neutral, processorArchitecture=MSIL">
@@ -152,6 +154,10 @@
     </Content>
     <Content Include="Content\sketch poses.png" />
     <Content Include="Content\theFont_0.png">
+    <Content Include="Content\Sound\rain.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sound\footstep.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Tiles\FirePiece.png">

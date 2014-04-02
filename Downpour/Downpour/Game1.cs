@@ -42,7 +42,9 @@ namespace Downpour
 
         // Meta-level game state.
         private int levelIndex = -1;
+        public static Screen currentScreen;
         private Level level;
+        private TitleScreen titleScreen;
         private bool wasContinuePressed;
 
         // We store our input states so that we only poll once per frame,
@@ -85,7 +87,9 @@ namespace Downpour
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            LoadTitleScreen();
             LoadNextLevel();
+            currentScreen = titleScreen;
             winOverlay = Content.Load<Texture2D>("you_win");
             winOverallOverlay = Content.Load<Texture2D>("you_win_overall");
             diedOverlay = Content.Load<Texture2D>("you_died");
@@ -109,10 +113,22 @@ namespace Downpour
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            switch (currentScreen.Type)
+            {
+                case "TitleScreen":
+                    currentScreen = titleScreen;
+                    break;
+                //case "LevelSelectScreen":
+                //    currentScreen = new LevelSelectScreen();
+                //    break;
+                case "Level":
+                    currentScreen = level;
+                    break;
+            }
             HandleInput();
 
             // Update our level, passing down the GameTime along with all of our input states
-            level.Update(gameTime, keyboardState, gamePadState);
+            currentScreen.Update(gameTime, keyboardState, gamePadState);
 
             base.Update(gameTime);
         }
@@ -211,7 +227,7 @@ namespace Downpour
             {
                 if (!level.Player.IsAlive)
                 {
-                    Exit();
+                    level.StartNewLife();
                 }
                 else if (level.ReachedExit)
                         LoadNextLevel();
@@ -222,13 +238,18 @@ namespace Downpour
             wasContinuePressed = continuePressed;
         }
 
+        private void LoadTitleScreen()
+        {
+            titleScreen = new TitleScreen(Services, graphics);
+        }
+
         // Loads the next screen
         private void LoadNextLevel()
         {
             // Move to the next level
             levelIndex = (levelIndex + 1);
 
-            if (levelIndex >= numberOfLevels) Exit();
+            if (levelIndex >= numberOfLevels) currentScreen.Type = "TitleScreen";
 
             // Unloads the content for the current level before loading the next one.
             if (level != null)
@@ -237,7 +258,7 @@ namespace Downpour
             // Load the level.
             string levelPath = string.Format("{0}/{1}.json", Content.RootDirectory, "practice");
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
-                level = new Level(Services, fileStream, levelIndex);
+            level = new Level(Services, fileStream, levelIndex);
         }
 
         // Starts level over if player hits spacebar.  This feature should probably be removed at some point.
@@ -253,8 +274,9 @@ namespace Downpour
         {
             graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            level.Draw(gameTime, spriteBatch);
             //TODO delete? // hud.Draw(spriteBatch, fontRenderer);
+            
+            currentScreen.Draw(gameTime, spriteBatch);
             DrawHud();
 
             base.Draw(gameTime);

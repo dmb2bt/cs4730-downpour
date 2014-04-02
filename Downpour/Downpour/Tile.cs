@@ -30,7 +30,7 @@ namespace Downpour
     }
 
     // Stores the appearance and collision behavior of a tile.
-    struct Tile
+    public struct Tile
     {
         public Texture2D Texture;
         public TileCollision Collision;
