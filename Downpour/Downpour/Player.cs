@@ -55,8 +55,20 @@ namespace Downpour
         }
         Vector2 velocity;
 
-        public float speedMultiplier = 1.0f;
-        public float speedMultiplierStep = 0.3f;
+        public const float BASE_POWERUP_MULTIPLIER = 1.0f;
+        public float groundSpeedMultiplier = 1.0f;
+        public float jumpSpeedMultiplier = 1.0f;
+        public float speedMultiplierStep = 2.0f;
+
+        private bool SpeedBoosted = false;
+        private bool JumpBoosted = false;
+        private bool IsInvulnerable = false;
+        private float speedBoostTime = 0.0f;
+        private float jumpBoostTime = 0.0f;
+        private float invulnerabilityTime = 0.0f;
+        private const float SpeedBoostDuration = 5.0f;
+        private const float JumpBoostDuration = 5.0f;
+        private const float InvulnerabilityDuration = 5.0f;
 
         // Constants for controlling horizontal movement
         public float MoveAcceleration = 11500.0f;
@@ -65,17 +77,17 @@ namespace Downpour
         public float AirDragFactor = 0.50f;
 
         // Constants for controlling vertical movement
-        public float MaxJumpTime = 3.0f;
-        public float JumpLaunchVelocity = -1100.0f;
-        public float GravityAcceleration = 3000.0f;
-        public float MaxFallSpeed = 600.0f;
+        public float MaxJumpTime = 3.5f;
+        public float JumpLaunchVelocity = -900.0f;
+        public float GravityAcceleration = 2000.0f;
+        public float MaxFallSpeed = 500.0f;
         public float JumpControlPower = 0.05f;
 
         // Gamepad input configuration
         private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
-        private const bool DEBUG_NO_RAIN_DAMAGE = true;
+        private const bool DEBUG_NO_RAIN_DAMAGE = false;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -89,11 +101,11 @@ namespace Downpour
         private int life;
 
         // Creates an Umbrella shield that decreases before player life
-        public int UmbrellaLife {
-            get { return umbrellaLife; }
+        public int ShieldLife{
+            get { return shieldLife; }
         }
-        private int umbrellaLife = 0;
-        private const int UMBRELLA_LIFE_MAX = 100;
+        private int shieldLife = 0;
+        private const int SHIELD_MAX_LIFE = 500;
 
         // Rain values
         bool rainedOn;
@@ -146,13 +158,13 @@ namespace Downpour
         public void LoadContent()
         {
             // Load animated textures. (.1f is frame time)
-            idleAnimation = new Animation(Level.Content.Load<Texture2D>("new_idle"), 0.1f, true);
-            runAnimation = new Animation(Level.Content.Load<Texture2D>("left"), 0.15f, true);
+            idleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_idle"), 0.1f, true);
+            runAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_left"), 0.1f, true);
 
             // Calculate bounds within texture size.
-            int width = (int)(idleAnimation.FrameWidth * 0.35);
+            int width = (int)(idleAnimation.FrameWidth * 1.0);
             int left = (idleAnimation.FrameWidth - width) / 2;
-            int height = (int)(idleAnimation.FrameWidth * 0.6);
+            int height = (int)(idleAnimation.FrameWidth * 1.0);
             int top = idleAnimation.FrameHeight - height;
             localBounds = new Rectangle(left, top, width, height);
 
@@ -168,6 +180,7 @@ namespace Downpour
 
         public void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
+            UpdateTimers(gameTime);
             GetInput(keyboardState, gamePadState);
             ApplyPhysics(gameTime);
             changeRain(gameTime);
@@ -226,7 +239,10 @@ namespace Downpour
                 (keyboardState.IsKeyDown(Keys.Right) && controlsInverted) ||
                 keyboardState.IsKeyDown(Keys.A))
             {
-                movement = -1.0f * speedMultiplier;
+                if (!IsOnGround)
+                    movement = -1.0f * jumpSpeedMultiplier;
+                else
+                    movement = -1.0f * groundSpeedMultiplier;
             }
 
             // Move right
@@ -236,7 +252,10 @@ namespace Downpour
                      (keyboardState.IsKeyDown(Keys.Left) && controlsInverted) ||
                      keyboardState.IsKeyDown(Keys.D))
             {
-                movement = 1.0f * speedMultiplier;
+                if (!IsOnGround)
+                    movement = 1.0f * jumpSpeedMultiplier;
+                else
+                    movement = 1.0f * groundSpeedMultiplier;
             }
 
             // Check if the player wants to jump.
@@ -400,18 +419,19 @@ namespace Downpour
             }
 
             // Take damage from rain.
-            if (rainedOn && !DEBUG_NO_RAIN_DAMAGE)
+            if (rainedOn && (!DEBUG_NO_RAIN_DAMAGE && !IsInvulnerable))
             {
-                if (umbrellaLife > 0)
+                if (shieldLife > 0)
                 {
-                    umbrellaLife -= this.rainLevel;
+                    shieldLife -= this.rainLevel;
                 }
                 else
                 {
-                    if (umbrellaLife < 0)
+                    if (shieldLife < 0)
                     {
-                        this.life += umbrellaLife;
-                        umbrellaLife = 0;
+                        // Subtract from life if shield goes negative
+                        this.life += shieldLife;
+                        shieldLife = 0;
                     }
                     this.life -= this.rainLevel;
                     if (this.life <= 0)
@@ -425,6 +445,43 @@ namespace Downpour
             previousBottom = bounds.Bottom;
         }
 
+        private void UpdateTimers(GameTime gameTime)
+        {
+            if (SpeedBoosted)
+            {
+                if (speedBoostTime < SpeedBoostDuration)
+                    speedBoostTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                else
+                {
+                    groundSpeedMultiplier = BASE_POWERUP_MULTIPLIER;
+                    speedBoostTime = 0.0f;
+                    SpeedBoosted = false;
+                }
+            }
+            if (JumpBoosted)
+            {
+                if (jumpBoostTime < JumpBoostDuration)
+                    jumpBoostTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                else
+                {
+                    jumpSpeedMultiplier = BASE_POWERUP_MULTIPLIER;
+                    jumpBoostTime = 0.0f;
+                    JumpBoosted = false;
+                }
+            }
+            if (IsInvulnerable)
+            {
+                if (invulnerabilityTime < InvulnerabilityDuration)
+                    invulnerabilityTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                else
+                {
+                    invulnerabilityTime = 0.0f;
+                    IsInvulnerable = false;
+                }
+            }
+
+        }
+
         public void OnKilled()
         {
             isAlive = false;
@@ -436,21 +493,39 @@ namespace Downpour
             // Right now they can continue to move after finishing the level.
         }
 
-        public void incrementSpeedMultiplier()
+        public void ApplySpeedBoost()
         {
-            speedMultiplier += speedMultiplierStep;
-            if (runAnimation.FrameTime > 0.1f)
-                runAnimation.FrameTime -= 0.02f;
+            SpeedBoosted = true;
+            speedBoostTime = 0.0f;
+            groundSpeedMultiplier += speedMultiplierStep;
         }
 
-        public void invertControls()
+        public void ApplyJumpBoost()
+        {
+            JumpBoosted = true;
+            jumpBoostTime = 0.0f;
+            jumpSpeedMultiplier += speedMultiplierStep;
+        }
+
+        public void ApplyInvulnerability()
+        {
+            IsInvulnerable = true;
+            invulnerabilityTime = 0.0f;
+        }
+
+        public void InvertControls()
         {
             controlsInverted = !controlsInverted;
         }
 
-        public void setUmbrella()
+        public void ApplySuit()
         {
-            umbrellaLife = UMBRELLA_LIFE_MAX;
+            // TODO: Add Shield and Update sprite/animations
+        }
+
+        public void Heal(int healthBoost)
+        {
+            Life += healthBoost;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

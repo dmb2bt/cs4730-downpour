@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Downpour
 {
-    public class SpeedFruit : PowerUp
+    class JumpBoostFruit : PowerUp
     {
         protected Texture2D texture;
         private Vector2 origin;
@@ -30,9 +30,9 @@ namespace Downpour
             return new Circle(Position, Tile.Width / 3.0f);
         }
 
-        private const string TEXTURE = "Tiles/speedfruit";
+        private const string TEXTURE = "Tiles/jumpboostfruit";
 
-        public SpeedFruit(Level level, Vector2 position) 
+        public JumpBoostFruit(Level level, Vector2 position)
         {
             this.level = level;
             this.basePosition = position;
@@ -48,7 +48,7 @@ namespace Downpour
 
         public void Update(GameTime gameTime)
         {
-            const float BounceHeight = 0.13f;
+            const float BounceHeight = 0.12f;
             const float BounceRate = 3.0f;
             const float BounceSync = -0.75f;
 
@@ -58,13 +58,13 @@ namespace Downpour
 
         public void OnCollected(Player collectedBy)
         {
-            collectedBy.ApplySpeedBoost();
+            //update jump somehow.
+            collectedBy.ApplyJumpBoost();
         }
-
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, Position, null, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
         }
-   }
+    }
 }

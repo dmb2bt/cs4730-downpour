@@ -43,6 +43,14 @@ C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.exe
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.pdb
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.csprojResolveAssemblyReference.cache
-C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\left.png
-C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\new_idle.png
-C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\right.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\speedfruit.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\controlinvertfruit.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\invulnerabilityfruit.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\healthfruit.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\jumpboostfruit.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\left.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\right.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\left_long.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\idle.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\suit_idle.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\suit_left.png

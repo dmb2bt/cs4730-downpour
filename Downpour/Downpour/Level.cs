@@ -182,63 +182,40 @@ namespace Downpour
                 // Air without rain
                 case 0:
                     return LoadClearTile();
-
                 // Impassable block (standard platform) without rain
                 case 1:
                     return LoadTile("BlockA0", TileCollision.Impassable, false);
-
                 // Impassable block (standard platform) with rain
                 case 2:
                     return LoadTile("RainBlock", TileCollision.Impassable, false);
-                
-                // Part of fire -- Not currently used 
+                // Fire Piece
                 case 3:
-                    /*
-                     * DAVID!! DAVIDDD!! This will load the tile for the part of the fire, 
-                     * but not yet because it's not created yet. So right now it's loading a
-                     * blank tile
-                     */
                     return LoadFirePieceTile(x, y);
-                    //return LoadTile("FirePiece", TileCollision.Passable, false);
-
-                // Power-up -- Not currently used 
+                // Power-up
                 case 4:
-                    /*
-                     * DAVID!! DAVIDDD!! This will load the tile for the power-up, 
-                     * but not yet because it's not created yet. So right now it's loading a
-                     * blank tile
-                     */
-                    //return LoadTile("FirePart", TileCollision.Passable, false);
-                    //return LoadClearTile();
-                    return LoadSpeedFruitTile(x, y);
-
+                    return LoadJumpBoostFruitTile(x, y);
                 // Exit
                 case 5:
                     return LoadExitTile(x, y);
-
                 // Air with rain
                 case 6:
                     return LoadRainTile();
-
                 // Player start point without rain
                 case 7:
                     return LoadStartTile(x, y);
-
                 // Floating platform--Not currently used
                 case 8:
-                    return LoadControlInvertFruitTile(x, y);
-
+                    //return LoadControlInvertFruitTile(x, y);
+                    return LoadSpeedFruitTile(x, y);
                 // Platform block--Not currently used
                 case 9:
-                    return LoadUmbrellaFruitTile(x, y);
+                    return LoadInvulnerabilityFruitTile(x, y);
                 // Passable block--Not currently used
                 case 10:
                     return LoadTile("BlockA0", TileCollision.Passable, false);
-                
                 // Player start point with rain
                 case 11:
                     return LoadStartTileRain(x, y);
-
                 // Unknown tile type character
                 default:
                     throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
@@ -324,10 +301,26 @@ namespace Downpour
             return LoadRainTile();
         }
 
-        private Tile LoadUmbrellaFruitTile(int x, int y)
+        private Tile LoadInvulnerabilityFruitTile(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
-            powerups.Add(new UmbrellaFruit(this, new Vector2(position.X, position.Y)));
+            powerups.Add(new InvulnerabilityFruit(this, new Vector2(position.X, position.Y)));
+
+            return LoadRainTile();
+        }
+
+        private Tile LoadHealthFruitTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            powerups.Add(new HealthFruit(this, new Vector2(position.X, position.Y)));
+
+            return LoadRainTile();
+        }
+        
+        private Tile LoadJumpBoostFruitTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            powerups.Add(new JumpBoostFruit(this, new Vector2(position.X, position.Y)));
 
             return LoadRainTile();
         }
@@ -537,9 +530,9 @@ namespace Downpour
             int life = player.Life;
             Rectangle lifeBar = new Rectangle(20, 20, life / 4, 20);
             spriteBatch.Draw(layers[0].Texture, lifeBar, Color.Red);
-            int umbrellaShield = player.UmbrellaLife;
-            Rectangle umbrellaShieldBar = new Rectangle(20, 40, umbrellaShield, 20);
-            spriteBatch.Draw(layers[0].Texture, umbrellaShieldBar, Color.Purple);
+            int shield = player.ShieldLife;
+            Rectangle shieldBar = new Rectangle(20, 40, shield, 20);
+            spriteBatch.Draw(layers[0].Texture, shieldBar, Color.Purple);
 
             spriteBatch.End();
         }
@@ -553,7 +546,7 @@ namespace Downpour
             // For each tile position
             for (int y = 0; y < Height; ++y)
             {
-                for (int x = left; x < right; ++x)
+                for (int x = left; x <= right; ++x)
                 {
                     // If there is a visible tile in that position
                     Texture2D texture = tiles[x, y].Texture;
