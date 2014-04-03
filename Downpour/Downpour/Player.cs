@@ -21,8 +21,10 @@ namespace Downpour
     public class Player
     {
         // Animations
-        private Animation idleAnimation;
-        private Animation runAnimation;
+        private Animation normalIdleAnimation;
+        private Animation normalRunAnimation;
+        private Animation suitIdleAnimation;
+        private Animation suitRunAnimation;
         private SpriteEffects flip = SpriteEffects.None;
         private AnimationPlayer sprite;
 
@@ -164,17 +166,19 @@ namespace Downpour
         public void LoadContent()
         {
             // Load animated textures. (.1f is frame time)
-            idleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_idle"), 0.1f, true);
-            runAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_left"), 0.1f, true);
+            normalIdleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/idle"), 0.1f, true);
+            normalRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/left"), 0.1f, true);
+            suitIdleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_idle"), 0.1f, true);
+            suitRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_left"), 0.1f, true);
 
             // Load audio
             footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
 
             // Calculate bounds within texture size.
-            int width = (int)(idleAnimation.FrameWidth * 1.0);
-            int left = (idleAnimation.FrameWidth - width) / 2;
-            int height = (int)(idleAnimation.FrameWidth * 1.0);
-            int top = idleAnimation.FrameHeight - height;
+            int width = (int)(normalIdleAnimation.FrameWidth * 1.0);
+            int left = (normalIdleAnimation.FrameWidth - width) / 2;
+            int height = (int)(normalIdleAnimation.FrameWidth * 1.0);
+            int top = normalIdleAnimation.FrameHeight - height;
             localBounds = new Rectangle(left, top, width, height);
 
         }
@@ -184,7 +188,8 @@ namespace Downpour
             Position = position;
             Velocity = Vector2.Zero;
             isAlive = true;
-            sprite.PlayAnimation(idleAnimation);
+            shieldLife = 0;
+            sprite.PlayAnimation(normalIdleAnimation);
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
@@ -204,11 +209,17 @@ namespace Downpour
             {
                 if (Math.Abs(Velocity.X) - 0.02f > 0)
                 {
-                    sprite.PlayAnimation(runAnimation);
+                    if (shieldLife <= 0)
+                        sprite.PlayAnimation(normalRunAnimation);
+                    else
+                        sprite.PlayAnimation(suitRunAnimation);
                 }
                 else
                 {
-                    sprite.PlayAnimation(idleAnimation);
+                    if (shieldLife <= 0)
+                        sprite.PlayAnimation(normalIdleAnimation);
+                    else
+                        sprite.PlayAnimation(suitIdleAnimation);
                 }
             }
 
@@ -547,6 +558,8 @@ namespace Downpour
         public void ApplySuit()
         {
             // TODO: Add Shield and Update sprite/animations
+            shieldLife = SHIELD_MAX_LIFE;
+
         }
 
         public void Heal(int healthBoost)

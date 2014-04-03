@@ -206,7 +206,7 @@ namespace Downpour
                     return LoadFirePieceTile(x, y);
                 // Power-up
                 case 4:
-                    return LoadJumpBoostFruitTile(x, y);
+                    return LoadSuitTile(x, y);
                 // Exit
                 case 5:
                     return LoadExitTile(x, y);
@@ -293,7 +293,7 @@ namespace Downpour
         private Tile LoadFirePieceTile(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
-            firePieces.Add(new FirePiece(this, new Vector2(position.X, position.Y)));
+            firePieces.Add(new FirePiece(this, new Vector2(position.X, position.Y), firePieces.Count));
 
             return LoadTile("rain0", TileCollision.Passable, false);
         }
@@ -334,6 +334,14 @@ namespace Downpour
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new JumpBoostFruit(this, new Vector2(position.X, position.Y)));
+
+            return LoadRainTile();
+        }
+
+        private Tile LoadSuitTile(int x, int y)
+        {
+            Point position = GetBounds(x, y).Center;
+            powerups.Add(new Suit(this, new Vector2(position.X, position.Y)));
 
             return LoadRainTile();
         }

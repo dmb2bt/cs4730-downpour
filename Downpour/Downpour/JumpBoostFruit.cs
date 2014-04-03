@@ -30,7 +30,7 @@ namespace Downpour
             return new Circle(Position, Tile.Width / 3.0f);
         }
 
-        private const string TEXTURE = "Tiles/jumpboostfruit";
+        private const string TEXTURE = "PowerUps/jumpboostfruit";
 
         public JumpBoostFruit(Level level, Vector2 position)
         {

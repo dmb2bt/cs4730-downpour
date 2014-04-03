@@ -256,7 +256,7 @@ namespace Downpour
                 level.Dispose();
 
             // Load the level.
-            string levelPath = string.Format("{0}/{1}.json", Content.RootDirectory, "practice");
+            string levelPath = string.Format("{0}/{1}/{2}.json", Content.RootDirectory, "Levels", "practice");
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
             level = new Level(Services, fileStream, levelIndex);
         }

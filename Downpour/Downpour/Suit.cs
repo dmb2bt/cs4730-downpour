@@ -7,9 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Downpour
 {
-    class HealthFruit : PowerUp
+    class Suit : PowerUp
     {
-        private const int HEALTHBONUS = 150;
         protected Texture2D texture;
         private Vector2 origin;
         private Vector2 basePosition;
@@ -31,9 +30,9 @@ namespace Downpour
             return new Circle(Position, Tile.Width / 3.0f);
         }
 
-        private const string TEXTURE = "PowerUps/healthfruit";
+        private const string TEXTURE = "PowerUps/suit";
 
-        public HealthFruit(Level level, Vector2 position)
+        public Suit(Level level, Vector2 position) 
         {
             this.level = level;
             this.basePosition = position;
@@ -49,7 +48,7 @@ namespace Downpour
 
         public void Update(GameTime gameTime)
         {
-            const float BounceHeight = 0.14f;
+            const float BounceHeight = 0.1f;
             const float BounceRate = 3.0f;
             const float BounceSync = -0.75f;
 
@@ -59,8 +58,9 @@ namespace Downpour
 
         public void OnCollected(Player collectedBy)
         {
-            collectedBy.Heal(HEALTHBONUS);
+            collectedBy.ApplySuit();
         }
+
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
