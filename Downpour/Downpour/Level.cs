@@ -35,6 +35,8 @@ namespace Downpour
         // The layer which entities are drawn on top of.
         private const int EntityLayer = 1;
 
+        private List<Texture2D> rainTextures;
+
         // Entities in the level.
         public Player Player
         {
@@ -66,6 +68,8 @@ namespace Downpour
             get { return reachedExit; }
         }
         bool reachedExit;
+        private AnimationPlayer exitAnimation;
+        private Animation campfireAnimation;
 
         // Level content.
         public ContentManager Content
@@ -73,6 +77,8 @@ namespace Downpour
             get { return content; }
         }
         ContentManager content;
+
+        private FontRenderer fontRenderer;
 
 
         #region Loading
@@ -90,6 +96,10 @@ namespace Downpour
             // Create a new content manager to load content used just by this level.
             content = new ContentManager(serviceProvider, "Content");
 
+            var fontFilePath = Path.Combine(Content.RootDirectory, "theFont.fnt");
+            var fontFile = FontLoader.Load(fontFilePath);
+            var fontTexture = Content.Load<Texture2D>("theFont_0.png");
+            fontRenderer = new FontRenderer(fontFile, fontTexture);
             // All levels begin with a rain level of 2
             lastRain = 2;
 
@@ -97,8 +107,8 @@ namespace Downpour
             // use the same backgrounds and only use the left-most part of them.
             // Currently, the background has two layers, blank white behind rain2
             layers = new Layer[2];
-            layers[0] = new Layer(Content, "clear", 1.0f);
-            layers[1] = new Layer(Content, "rain2", 1.0f);
+            layers[0] = new Layer(Content, "Backgrounds/levelbackground", 1.0f);
+            //layers[1] = new Layer(Content, "rain2", 1.0f);
 
             // Initialize the player with 2000 life if this is the first level
             if (player == null)
@@ -112,6 +122,14 @@ namespace Downpour
         public override void LoadContent()
         {
             Type = "Level";
+            rainTextures = new List<Texture2D>();
+
+            campfireAnimation = new Animation(Content.Load<Texture2D>("Tiles/campfire"), 0.1f, true);
+            for (int i = 0; i < 4; i++)
+            {
+                Texture2D texture = Content.Load<Texture2D>("Tiles/rain" + i);
+                rainTextures.Add(texture);
+            }
 
             // Load audio
             rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
@@ -610,6 +628,7 @@ namespace Downpour
             {
                 Player.OnReachedExit();
                 reachedExit = true;
+                exitAnimation.PlayAnimation(campfireAnimation);
             }
             
         }
@@ -645,12 +664,12 @@ namespace Downpour
             if (lastRain != player.rainLevel)
             {
                // This should probably not be loading content in the Draw method...
-                layers[1].Texture = Content.Load<Texture2D>("rain" + player.rainLevel + ".png");
+               //layers[1].Texture = Content.Load<Texture2D>("rain" + player.rainLevel + ".png");
             }
             lastRain = player.rainLevel;
             
             // Draw background up to entity layer
-            for (int i = 0; i <= EntityLayer; ++i)
+            for (int i = 0; i < EntityLayer; ++i)
                 layers[i].Draw(spriteBatch, cameraPosition);
             spriteBatch.End();
 
@@ -670,6 +689,12 @@ namespace Downpour
             foreach (PowerUp powerup in powerups)
                 powerup.Draw(gameTime, spriteBatch);
 
+            if (reachedExit)
+            {
+                Vector2 exitPosition = new Vector2(exit.X, exit.Y + 15);
+                exitAnimation.Draw(gameTime, spriteBatch, exitPosition, SpriteEffects.None);
+            }
+
             spriteBatch.End();
 
             spriteBatch.Begin();
@@ -679,11 +704,15 @@ namespace Downpour
 
             // Draw life bar
             int life = player.Life;
-            Rectangle lifeBar = new Rectangle(20, 20, life / 4, 20);
+            fontRenderer.DrawText(spriteBatch, 35, 14, "Life");
+            Rectangle lifeBar = new Rectangle(85, 20, life / 4, 20);
             spriteBatch.Draw(layers[0].Texture, lifeBar, Color.Red);
             int shield = player.ShieldLife;
-            Rectangle shieldBar = new Rectangle(20, 40, shield, 20);
+            fontRenderer.DrawText(spriteBatch, 5, 37, "Shield");
+            Rectangle shieldBar = new Rectangle(85, 44, shield, 20);
             spriteBatch.Draw(layers[0].Texture, shieldBar, Color.Purple);
+
+            fontRenderer.DrawText(spriteBatch, 575, 600, "Fire Pieces: " + (3 - firePieces.Count) + " / 3"); 
 
             spriteBatch.End();
         }
@@ -700,6 +729,10 @@ namespace Downpour
                 for (int x = left; x <= right; ++x)
                 {
                     // If there is a visible tile in that position
+                    if (tiles[x, y].rain)
+                    {
+                        tiles[x, y].Texture = rainTextures[lastRain];
+                    }
                     Texture2D texture = tiles[x, y].Texture;
                     if (texture != null)
                     {

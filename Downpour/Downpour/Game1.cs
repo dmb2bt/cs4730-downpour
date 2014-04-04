@@ -67,6 +67,7 @@ namespace Downpour
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferHeight = 640;
+            graphics.PreferredBackBufferWidth = 800;
             Content.RootDirectory = "Content";
 
         }
@@ -240,7 +241,7 @@ namespace Downpour
 
         private void LoadTitleScreen()
         {
-            titleScreen = new TitleScreen(Services, graphics);
+            titleScreen = new TitleScreen(Services, graphics, Content);
         }
 
         // Loads the next screen
