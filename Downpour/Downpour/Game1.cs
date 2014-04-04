@@ -256,7 +256,7 @@ namespace Downpour
                 level.Dispose();
 
             // Load the level.
-            string levelPath = string.Format("{0}/{1}/{2}.json", Content.RootDirectory, "Levels", "0");
+            string levelPath = string.Format("{0}/{1}/{2}.json", Content.RootDirectory, "Levels", levelIndex);
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
             level = new Level(Services, fileStream, levelIndex);
         }
@@ -338,7 +338,6 @@ namespace Downpour
                 fontRenderer.DrawText(spriteBatch, offset, 290, level.Player.JumpControlPower.ToString());
                 fontRenderer.DrawText(spriteBatch, offset, 320, level.Player.speedMultiplierStep.ToString());
             }
-            
 
             spriteBatch.End();
         }

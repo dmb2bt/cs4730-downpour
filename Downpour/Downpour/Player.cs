@@ -95,7 +95,7 @@ namespace Downpour
         private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
-        private const bool DEBUG_NO_RAIN_DAMAGE = true;
+        private const bool DEBUG_NO_RAIN_DAMAGE = false;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -107,6 +107,7 @@ namespace Downpour
             set { life = value; }
         }
         private int life;
+        public const int BASE_PLAYER_LIFE = 2000;
 
         // Creates an Umbrella shield that decreases before player life
         public int ShieldLife{
@@ -152,10 +153,10 @@ namespace Downpour
         }
 
         // Constructs a new player.
-        public Player(Level level, Vector2 position, int life)
+        public Player(Level level, Vector2 position)
         {
             this.level = level;
-            this.life = life;
+            this.life = BASE_PLAYER_LIFE;
             this.rainedOn = false;
             LoadContent();
             this.rainLevel = 2;

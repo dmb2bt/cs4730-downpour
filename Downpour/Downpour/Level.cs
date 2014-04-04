@@ -220,21 +220,20 @@ namespace Downpour
                 case 3:
                     return new Tile(Content.Load<Texture2D>("Tiles/trcorner"), TileCollision.Impassable, false);
 
-                case 4: //not included yet
-                    //return new Tile(Content.Load<Texture2D>("Tiles/moon"), TileCollision.Impassable, false);
-                    return LoadClearTile();
-
-                case 5:
+                case 4: 
                     return new Tile(Content.Load<Texture2D>("Tiles/lrtside"), TileCollision.Impassable, false);
 
+                case 5:
+                    return new Tile(Content.Load<Texture2D>("Tiles/brindent"), TileCollision.Impassable, false);
+
                 case 6:
-                    return new Tile(Content.Load<Texture2D>("Tiles/trindent"), TileCollision.Impassable, false);
+                    return new Tile(Content.Load<Texture2D>("Tiles/blindent"), TileCollision.Impassable, false);
 
                 case 7:
-                    return new Tile(Content.Load<Texture2D>("Tiles/trlindent"), TileCollision.Impassable, false);
+                    return new Tile(Content.Load<Texture2D>("Tiles/trbrindent"), TileCollision.Impassable, false);
 
                 case 8:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tlindent"), TileCollision.Impassable, false);
+                    return new Tile(Content.Load<Texture2D>("Tiles/tlblindent"), TileCollision.Impassable, false);
 
                 case 9:
                     return new Tile(Content.Load<Texture2D>("Tiles/lside"), TileCollision.Impassable, false);
@@ -246,10 +245,19 @@ namespace Downpour
                     return new Tile(Content.Load<Texture2D>("Tiles/rside"), TileCollision.Impassable, false);
 
                 case 12:
-                    return LoadRainTile();
+                    return new Tile(Content.Load<Texture2D>("Tiles/lrside"), TileCollision.Impassable, false);
 
                 case 13:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lrside"), TileCollision.Impassable, false);
+                    return new Tile(Content.Load<Texture2D>("Tiles/trindent"), TileCollision.Impassable, false);
+
+                case 14:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tlindent"), TileCollision.Impassable, false);
+
+                case 15:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tltrindent"), TileCollision.Impassable, false);
+
+                case 16:
+                    return new Tile(Content.Load<Texture2D>("Tiles/blbrindent"), TileCollision.Impassable, false);
 
                 case 17:
                     return new Tile(Content.Load<Texture2D>("Tiles/blcorner"), TileCollision.Impassable, false);
@@ -259,6 +267,9 @@ namespace Downpour
 
                 case 19:
                     return new Tile(Content.Load<Texture2D>("Tiles/brcorner"), TileCollision.Impassable, false);
+
+                case 20:
+                    return new Tile(Content.Load<Texture2D>("Tiles/moon"), TileCollision.Impassable, false);
 
                 case 21:
                     return new Tile(Content.Load<Texture2D>("Tiles/lbrside"), TileCollision.Impassable, false);
@@ -276,15 +287,44 @@ namespace Downpour
                     return new Tile(Content.Load<Texture2D>("Tiles/lsidetrindent"), TileCollision.Impassable, false);
 
                 case 26:
-                    return new Tile(Content.Load<Texture2D>("Tiles/rsidetlindent"), TileCollision.Impassable, false);
-                case 166:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tlindentrside"), TileCollision.Impassable, false);
+
+                case 27:
+                    return new Tile(Content.Load<Texture2D>("Tiles/ltbside"), TileCollision.Impassable, false);
+
+                case 28:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tbside"), TileCollision.Impassable, false);
+
+                case 29:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tbrside"), TileCollision.Impassable, false);
+
+                case 33:
+                    return new Tile(Content.Load<Texture2D>("Tiles/lsidebrindent"), TileCollision.Impassable, false);
+
+                case 34:
+                    return new Tile(Content.Load<Texture2D>("Tiles/blindentrside"), TileCollision.Impassable, false);
+
+                case 41:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tsideblindent"), TileCollision.Impassable, false);
+                
+                case 42:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tsidebrindent"), TileCollision.Impassable, false);
+                
+                case 49:
+                    return new Tile(Content.Load<Texture2D>("Tiles/tlindentbside"), TileCollision.Impassable, false);
+                
+                case 50:
+                    return new Tile(Content.Load<Texture2D>("Tiles/trindentbside"), TileCollision.Impassable, false);
+
+                case 126:
                     return LoadExitTile(x, y);
 
                 case 127:
                     return LoadRainTile();
 
-                case 168:
+                case 128: 
                     return LoadStartTile(x, y);
+
                 default:
                     throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
             }
@@ -352,27 +392,33 @@ namespace Downpour
                 // No item so do nothing
                 case 0:
                     break;
-                case 33:
+                
+                case 116:
                     LoadSpeedFruit(x, y);
                     break;
-                case 34:
-                    LoadSuit(x, y);
+
+                case 117:
+                    LoadControlInvertFruit(x, y);
                     break;
-                case 35:
+
+                case 118:
                     LoadInvulnerabilityFruit(x, y);
                     break;
-                case 36:
+
+                case 119:
                     LoadJumpBoostFruit(x, y);
                     break;
-                case 37:
+
+                case 120:
                     LoadHealthFruit(x, y);
+                    break;
+
+                case 123:
+                    LoadSuit(x, y);
                     break;
 
                 case 124:
                     LoadFirePiece(x, y);
-                    break;
-                case 125:
-                    LoadInvulnerabilityFruit(x, y);
                     break;
 
                 default:
