@@ -25,6 +25,8 @@ namespace Downpour
         private Animation normalRunAnimation;
         private Animation suitIdleAnimation;
         private Animation suitRunAnimation;
+        private Animation invulnerableIdleAnimation;
+        private Animation invulnerableRunAnimation;
         private SpriteEffects flip = SpriteEffects.None;
         private AnimationPlayer sprite;
 
@@ -93,7 +95,7 @@ namespace Downpour
         private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
-        private const bool DEBUG_NO_RAIN_DAMAGE = false;
+        private const bool DEBUG_NO_RAIN_DAMAGE = true;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -170,6 +172,8 @@ namespace Downpour
             normalRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/left"), 0.1f, true);
             suitIdleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_idle"), 0.1f, true);
             suitRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_left"), 0.1f, true);
+            invulnerableIdleAnimation  = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_idle"), 0.1f, true);
+            invulnerableRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_left"), 0.1f, true);
 
             // Load audio
             footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
@@ -210,14 +214,24 @@ namespace Downpour
                 if (Math.Abs(Velocity.X) - 0.02f > 0)
                 {
                     if (shieldLife <= 0)
-                        sprite.PlayAnimation(normalRunAnimation);
+                    {
+                        if (IsInvulnerable)
+                            sprite.PlayAnimation(invulnerableRunAnimation);
+                        else
+                            sprite.PlayAnimation(normalRunAnimation);
+                    }
                     else
                         sprite.PlayAnimation(suitRunAnimation);
                 }
                 else
                 {
                     if (shieldLife <= 0)
-                        sprite.PlayAnimation(normalIdleAnimation);
+                    {
+                        if (IsInvulnerable)
+                            sprite.PlayAnimation(invulnerableIdleAnimation);
+                        else
+                            sprite.PlayAnimation(normalIdleAnimation);
+                    }
                     else
                         sprite.PlayAnimation(suitIdleAnimation);
                 }

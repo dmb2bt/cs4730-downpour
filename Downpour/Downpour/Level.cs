@@ -127,6 +127,7 @@ namespace Downpour
             int width;
             int height; 
             List<int> tileNums = null;
+            List<int> pickupNums = null;
 
             using (StreamReader reader = new StreamReader(fileStream))
             {
@@ -136,8 +137,15 @@ namespace Downpour
 
                 width = levelData.width;
                 height = levelData.height;
-                foreach (Downpour.LevelData.Layer layer in levelData.layers){
-                    tileNums = layer.data;
+                int layerCount = 0;
+                foreach (LevelData.Layer layer in levelData.layers){
+                    if (layerCount == 0)
+                        tileNums = layer.data;
+                    else if (layerCount == 1)
+                        pickupNums = layer.data;
+
+                    layerCount += 1;
+
                 }
 
                 System.Diagnostics.Debug.WriteLine("width is: " + width);
@@ -150,6 +158,7 @@ namespace Downpour
 
             // Counter to go through the 
             int count = 0;
+            int pickupCount = 0;
 
             // Loop over every tile position,
             for (int y = 0; y < Height; ++y)
@@ -160,6 +169,13 @@ namespace Downpour
                     int tileType = tileNums[count++];
 
                     tiles[x, y] = LoadTile(tileType, x, y);
+
+                    if (pickupCount < pickupNums.Count)
+                    {
+                        int pickupableType = pickupNums[pickupCount];
+                        LoadPickUpable(pickupableType, x, y);
+                    }
+                    pickupCount++;
                 }
             }
 
@@ -192,44 +208,83 @@ namespace Downpour
             System.Diagnostics.Debug.WriteLine("tile num: " + tileType);
             switch (tileType)
             {
-                // Air without rain
                 case 0:
                     return LoadClearTile();
-                // Impassable block (standard platform) without rain
+
                 case 1:
-                    return LoadTile("BlockA0", TileCollision.Impassable, false);
-                // Impassable block (standard platform) with rain
+                    return new Tile(Content.Load<Texture2D>("Tiles/tlcorner"), TileCollision.Impassable, false);
+
                 case 2:
-                    return LoadTile("RainBlock", TileCollision.Impassable, false);
-                // Fire Piece
+                    return new Tile(Content.Load<Texture2D>("Tiles/tside"), TileCollision.Impassable, false);
+
                 case 3:
-                    return LoadFirePieceTile(x, y);
-                // Power-up
-                case 4:
-                    return LoadSuitTile(x, y);
-                // Exit
+                    return new Tile(Content.Load<Texture2D>("Tiles/trcorner"), TileCollision.Impassable, false);
+
+                case 4: //not included yet
+                    //return new Tile(Content.Load<Texture2D>("Tiles/moon"), TileCollision.Impassable, false);
+                    return LoadClearTile();
+
                 case 5:
-                    return LoadExitTile(x, y);
-                // Air with rain
+                    return new Tile(Content.Load<Texture2D>("Tiles/lrtside"), TileCollision.Impassable, false);
+
                 case 6:
-                    return LoadRainTile();
-                // Player start point without rain
+                    return new Tile(Content.Load<Texture2D>("Tiles/trindent"), TileCollision.Impassable, false);
+
                 case 7:
-                    return LoadStartTile(x, y);
-                // Floating platform--Not currently used
+                    return new Tile(Content.Load<Texture2D>("Tiles/trlindent"), TileCollision.Impassable, false);
+
                 case 8:
-                    //return LoadControlInvertFruitTile(x, y);
-                    return LoadSpeedFruitTile(x, y);
-                // Platform block--Not currently used
+                    return new Tile(Content.Load<Texture2D>("Tiles/tlindent"), TileCollision.Impassable, false);
+
                 case 9:
-                    return LoadInvulnerabilityFruitTile(x, y);
-                // Passable block--Not currently used
+                    return new Tile(Content.Load<Texture2D>("Tiles/lside"), TileCollision.Impassable, false);
+
                 case 10:
-                    return LoadTile("BlockA0", TileCollision.Passable, false);
-                // Player start point with rain
+                    return new Tile(Content.Load<Texture2D>("Tiles/center"), TileCollision.Impassable, false);
+
                 case 11:
-                    return LoadStartTileRain(x, y);
-                // Unknown tile type character
+                    return new Tile(Content.Load<Texture2D>("Tiles/rside"), TileCollision.Impassable, false);
+
+                case 12:
+                    return LoadRainTile();
+
+                case 13:
+                    return new Tile(Content.Load<Texture2D>("Tiles/lrside"), TileCollision.Impassable, false);
+
+                case 17:
+                    return new Tile(Content.Load<Texture2D>("Tiles/blcorner"), TileCollision.Impassable, false);
+
+                case 18:
+                    return new Tile(Content.Load<Texture2D>("Tiles/bside"), TileCollision.Impassable, false);
+
+                case 19:
+                    return new Tile(Content.Load<Texture2D>("Tiles/brcorner"), TileCollision.Impassable, false);
+
+                case 21:
+                    return new Tile(Content.Load<Texture2D>("Tiles/lbrside"), TileCollision.Impassable, false);
+
+                case 22:
+                    return new Tile(Content.Load<Texture2D>("Tiles/grass1"), TileCollision.Passable, false);
+
+                case 23:
+                    return new Tile(Content.Load<Texture2D>("Tiles/grass2"), TileCollision.Passable, false);
+
+                case 24:
+                    return new Tile(Content.Load<Texture2D>("Tiles/vines"), TileCollision.Passable, false);
+
+                case 25:
+                    return new Tile(Content.Load<Texture2D>("Tiles/lsidetrindent"), TileCollision.Impassable, false);
+
+                case 26:
+                    return new Tile(Content.Load<Texture2D>("Tiles/rsidetlindent"), TileCollision.Impassable, false);
+                case 166:
+                    return LoadExitTile(x, y);
+
+                case 127:
+                    return LoadRainTile();
+
+                case 168:
+                    return LoadStartTile(x, y);
                 default:
                     throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
             }
@@ -290,60 +345,81 @@ namespace Downpour
             return LoadTile("Exit", TileCollision.Passable, false);
         }
 
-        private Tile LoadFirePieceTile(int x, int y)
+        public void LoadPickUpable(int pickupableNum, int x, int y)
+        {
+            switch (pickupableNum)
+            {
+                // No item so do nothing
+                case 0:
+                    break;
+                case 33:
+                    LoadSpeedFruit(x, y);
+                    break;
+                case 34:
+                    LoadSuit(x, y);
+                    break;
+                case 35:
+                    LoadInvulnerabilityFruit(x, y);
+                    break;
+                case 36:
+                    LoadJumpBoostFruit(x, y);
+                    break;
+                case 37:
+                    LoadHealthFruit(x, y);
+                    break;
+
+                case 124:
+                    LoadFirePiece(x, y);
+                    break;
+                case 125:
+                    LoadInvulnerabilityFruit(x, y);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void LoadFirePiece(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             firePieces.Add(new FirePiece(this, new Vector2(position.X, position.Y), firePieces.Count));
-
-            return LoadTile("rain0", TileCollision.Passable, false);
         }
 
-        private Tile LoadSpeedFruitTile(int x, int y)
+        private void LoadSpeedFruit(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new SpeedFruit(this, new Vector2(position.X, position.Y)));
-
-            return LoadRainTile();
         }
 
-        private Tile LoadControlInvertFruitTile(int x, int y)
+        private void LoadControlInvertFruit(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new ControlInvertFruit(this, new Vector2(position.X, position.Y)));
-
-            return LoadRainTile();
         }
 
-        private Tile LoadInvulnerabilityFruitTile(int x, int y)
+        private void LoadInvulnerabilityFruit(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new InvulnerabilityFruit(this, new Vector2(position.X, position.Y)));
-
-            return LoadRainTile();
         }
 
-        private Tile LoadHealthFruitTile(int x, int y)
+        private void LoadHealthFruit(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new HealthFruit(this, new Vector2(position.X, position.Y)));
-
-            return LoadRainTile();
         }
         
-        private Tile LoadJumpBoostFruitTile(int x, int y)
+        private void LoadJumpBoostFruit(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new JumpBoostFruit(this, new Vector2(position.X, position.Y)));
-
-            return LoadRainTile();
         }
 
-        private Tile LoadSuitTile(int x, int y)
+        private void LoadSuit(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
             powerups.Add(new Suit(this, new Vector2(position.X, position.Y)));
-
-            return LoadRainTile();
         }
 
         // Unloads the level content.

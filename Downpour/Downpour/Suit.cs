@@ -48,7 +48,7 @@ namespace Downpour
 
         public void Update(GameTime gameTime)
         {
-            const float BounceHeight = 0.1f;
+            const float BounceHeight = 0.14f;
             const float BounceRate = 3.0f;
             const float BounceSync = -0.75f;
 
