@@ -388,6 +388,8 @@ namespace Downpour
                 {
                     // Fully override the vertical velocity with a power curve that gives players more control over the top of the jump
                     velocityY = JumpLaunchVelocity * 3 * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
+                    if (JumpBoosted)
+                        velocityY *= .45f * jumpSpeedMultiplier;
                 }
                 else
                 {

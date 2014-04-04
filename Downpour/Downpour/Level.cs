@@ -113,7 +113,7 @@ namespace Downpour
             // Initialize the player with 2000 life if this is the first level
             if (player == null)
             {
-                player = new Player(this, new Vector2(), 2000);
+                player = new Player(this, new Vector2());
             }
             LoadContent();
             LoadTiles(fileStream);
@@ -371,9 +371,7 @@ namespace Downpour
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
 
             // If this isn't the first level, initialize the player with the life he had left
-            int tempLife = 2000;
-            if (player != null) tempLife = player.Life;
-            player = new Player(this, start, tempLife);
+            player = new Player(this, start);
 
             return LoadClearTile();
         }
@@ -384,10 +382,7 @@ namespace Downpour
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
 
             // If this isn't the first level, initialize the player with the life he had left
-            int tempLife;
-            if (player != null) tempLife = player.Life;
-            else tempLife = 2000;
-            player = new Player(this, start, tempLife);
+            player = new Player(this, start);
 
             return LoadRainTile();
         }

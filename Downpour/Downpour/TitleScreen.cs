@@ -45,16 +45,16 @@ namespace Downpour
             Type = "TitleScreen";
             texture = Content.Load<Texture2D>("Backgrounds/MainMenu");
 
-            menuMusic = content.Load<SoundEffect>("Sound/mainmenu");
+            //menuMusic = content.Load<SoundEffect>("Sound/mainmenu");
         }
 
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
             GetInput(keyboardState, gamePadState);
 
-            music = menuMusic.CreateInstance();
-            music.IsLooped = true;
-            music.Play();
+            //music = menuMusic.CreateInstance();
+            //music.IsLooped = true;
+            //music.Play();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -69,9 +69,9 @@ namespace Downpour
 
         public void GetInput(KeyboardState keyboardState, GamePadState gamePadState)
         {
-            if (keyboardState.IsKeyDown(Keys.Enter))
+            if (keyboardState.IsKeyDown(Keys.Enter) || gamePadState.Buttons.Start == ButtonState.Pressed)
             {
-                music.Stop();
+                //music.Stop();
                 Game1.currentScreen.Type = "Level";
             }
         }
