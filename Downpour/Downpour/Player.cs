@@ -78,6 +78,8 @@ namespace Downpour
         private const float JumpBoostDuration = 5.0f;
         private const float InvulnerabilityDuration = 5.0f;
 
+        private const int waterDamage = 5;
+
         // Constants for controlling horizontal movement
         public float MoveAcceleration = 11500.0f;
         public float MaxMoveSpeed = 500.0f;
@@ -95,7 +97,9 @@ namespace Downpour
         private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
+        // Debugging Values
         private const bool DEBUG_NO_RAIN_DAMAGE = false;
+        private const bool DEBUG_NO_WATER_DAMAGE = false;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -118,6 +122,7 @@ namespace Downpour
 
         // Rain values
         bool rainedOn;
+        bool inWater;
         public int rainLevel;
 
         // Counters to update rain level periodically.
@@ -158,6 +163,7 @@ namespace Downpour
             this.level = level;
             this.life = BASE_PLAYER_LIFE;
             this.rainedOn = false;
+            this.inWater = false;
             LoadContent();
             this.rainLevel = 2;
             Reset(position);
@@ -194,6 +200,7 @@ namespace Downpour
             Velocity = Vector2.Zero;
             isAlive = true;
             shieldLife = 0;
+            life = BASE_PLAYER_LIFE;
             sprite.PlayAnimation(normalIdleAnimation);
         }
 
@@ -419,6 +426,7 @@ namespace Downpour
             // Reset flag to search for ground collision & rain collision.
             isOnGround = false;
             this.rainedOn = false;
+            this.inWater = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
@@ -427,6 +435,7 @@ namespace Downpour
                 {
                     // Check for rain.
                     if (Level.GetRain(x, y)) rainedOn = true;
+                    if (Level.GetWater(x, y)) inWater = true;
 
                     // If this tile is collidable,
                     TileCollision collision = Level.GetCollision(x, y);
@@ -488,6 +497,29 @@ namespace Downpour
                         shieldLife = 0;
                     }
                     this.life -= this.rainLevel;
+                    if (this.life <= 0)
+                    {
+                        OnKilled();
+                    }
+                }
+            }
+
+            // Take damage from water.
+            if (inWater && (!DEBUG_NO_WATER_DAMAGE && !IsInvulnerable))
+            {
+                if (shieldLife > 0)
+                {
+                    shieldLife -= waterDamage;
+                }
+                else
+                {
+                    if (shieldLife < 0)
+                    {
+                        // Subtract from life if shield goes negative
+                        this.life += shieldLife;
+                        shieldLife = 0;
+                    }
+                    this.life -= waterDamage;
                     if (this.life <= 0)
                     {
                         OnKilled();

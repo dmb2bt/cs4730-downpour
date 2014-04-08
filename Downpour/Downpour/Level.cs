@@ -287,10 +287,10 @@ namespace Downpour
                     return new Tile(Content.Load<Texture2D>("Tiles/brcorner"), TileCollision.Impassable, false);
 
                 case 20:
-                    return new Tile(Content.Load<Texture2D>("Tiles/moon"), TileCollision.Impassable, false);
+                    return new Tile(Content.Load<Texture2D>("Tiles/lbrside"), TileCollision.Impassable, false);
 
                 case 21:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lbrside"), TileCollision.Impassable, false);
+                    return new Tile(Content.Load<Texture2D>("Tiles/moon"), TileCollision.Impassable, false);
 
                 case 22:
                     return new Tile(Content.Load<Texture2D>("Tiles/grass1"), TileCollision.Passable, false);
@@ -315,6 +315,9 @@ namespace Downpour
 
                 case 29:
                     return new Tile(Content.Load<Texture2D>("Tiles/tbrside"), TileCollision.Impassable, false);
+
+                case 30:
+                    return new Tile(Content.Load<Texture2D>("Tiles/water"), TileCollision.Passable, false, true);
 
                 case 33:
                     return new Tile(Content.Load<Texture2D>("Tiles/lsidebrindent"), TileCollision.Impassable, false);
@@ -352,6 +355,11 @@ namespace Downpour
         private Tile LoadRainTile()
         {
             return LoadTile("rain2", TileCollision.Passable, true);
+        }
+
+        private Tile LoadWaterTile()
+        {
+            return LoadTile("water", TileCollision.Passable, true);
         }
 
         // Air without rain
@@ -507,7 +515,7 @@ namespace Downpour
             return tiles[x, y].Collision;
         }
 
-        // Gets whether a tile a tile will damage the player
+        // Gets whether a tile will damage the player
         public bool GetRain(int x, int y)
         {
             // Can't be damaged by tiles off the screen.
@@ -515,6 +523,16 @@ namespace Downpour
             if (y < 0 || y >= Height) return false;
 
             return tiles[x, y].rain;
+        }
+
+        // Gets whether a tile is water and will drastically damage the player
+        public bool GetWater(int x, int y)
+        {
+            // Can't be damaged by tiles off the screen.
+            if (x < 0 || x >= Width) return false;
+            if (y < 0 || y >= Height) return false;
+
+            return tiles[x, y].water;
         }
 
         // Gets the bounding rectangle of a tile in world space.
