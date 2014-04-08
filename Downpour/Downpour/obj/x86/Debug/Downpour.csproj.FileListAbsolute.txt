@@ -250,3 +250,10 @@ C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\trindentbside.png
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\tsideblindent.png
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\tsidebrindent.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Backgrounds\levelbackground.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Backgrounds\MainMenu.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\mainmenu.wav
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\campfire.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\noRain.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\rain1.png
+C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\rain3.png

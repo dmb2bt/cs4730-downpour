@@ -95,7 +95,7 @@ namespace Downpour
         private float MoveStickScale = 1.0f;
         private const Buttons JumpButton = Buttons.A;
 
-        private const bool DEBUG_NO_RAIN_DAMAGE = false;
+        private const bool DEBUG_NO_RAIN_DAMAGE = true;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;

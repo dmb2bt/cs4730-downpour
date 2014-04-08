@@ -107,6 +107,14 @@ namespace Downpour
         protected override void UnloadContent()
         {
             // Unload any non ContentManager content here
+            level.Dispose();
+            titleScreen.Dispose();
+        }
+
+        protected void Restart()
+        {
+            UnloadContent();
+            LoadContent();
         }
 
         // Allows the game to run logic such as updating the world,
@@ -248,18 +256,25 @@ namespace Downpour
         private void LoadNextLevel()
         {
             // Move to the next level
-            levelIndex = (levelIndex + 1);
+            levelIndex++;
 
-            if (levelIndex >= numberOfLevels) currentScreen.Type = "TitleScreen";
+            if (levelIndex == numberOfLevels)
+            {
+                levelIndex = -1;
+                Restart();
+            }
 
             // Unloads the content for the current level before loading the next one.
             if (level != null)
                 level.Dispose();
 
-            // Load the level.
-            string levelPath = string.Format("{0}/{1}/{2}.json", Content.RootDirectory, "Levels", levelIndex);
-            using (Stream fileStream = TitleContainer.OpenStream(levelPath))
-            level = new Level(Services, fileStream, levelIndex);
+            if (levelIndex >= 0)
+            {
+                // Load the level.
+                string levelPath = string.Format("{0}/{1}/{2}.json", Content.RootDirectory, "Levels", levelIndex);
+                using (Stream fileStream = TitleContainer.OpenStream(levelPath))
+                    level = new Level(Services, fileStream, levelIndex);
+            }
         }
 
         // Starts level over if player hits spacebar.  This feature should probably be removed at some point.
@@ -297,7 +312,7 @@ namespace Downpour
             // Choose the appropriate overlay
             if (level.ReachedExit)
             {
-                if (levelIndex >= numberOfLevels - 1) status = winOverallOverlay;
+                if (levelIndex == numberOfLevels - 1) status = winOverallOverlay;
                 else status = winOverlay;
             }
 

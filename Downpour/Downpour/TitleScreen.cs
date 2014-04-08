@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Downpour
 {
-    public class TitleScreen : Screen
+    public class TitleScreen : Screen, IDisposable
     {
         private GraphicsDeviceManager graphics;
         private Texture2D texture;
@@ -74,6 +74,11 @@ namespace Downpour
                 //music.Stop();
                 Game1.currentScreen.Type = "Level";
             }
+        }
+
+        public void Dispose()
+        {
+            Content.Unload();
         }
     }
 }
