@@ -236,7 +236,8 @@ namespace Downpour
             {
                 if (!level.Player.IsAlive)
                 {
-                    level.StartNewLife();
+                    //level.StartNewLife();
+                    ReloadCurrentLevel();
                 }
                 else if (level.ReachedExit)
                         LoadNextLevel();

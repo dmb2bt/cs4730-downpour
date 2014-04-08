@@ -17,6 +17,7 @@ namespace Downpour
         private Texture2D texture;
         private SoundEffect menuMusic;
         private SoundEffectInstance music;
+        private bool hasMusicStarted;
 
         public Vector2 Position
         {
@@ -36,6 +37,7 @@ namespace Downpour
             graphics = gameGraphics;
             graphics.PreferredBackBufferHeight = 640;
             this.content = content;
+            hasMusicStarted = false;
 
             LoadContent();
         }
@@ -45,16 +47,20 @@ namespace Downpour
             Type = "TitleScreen";
             texture = Content.Load<Texture2D>("Backgrounds/MainMenu");
 
-            //menuMusic = content.Load<SoundEffect>("Sound/mainmenu");
+            menuMusic = content.Load<SoundEffect>("Sound/mainmenu");
         }
 
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
             GetInput(keyboardState, gamePadState);
 
-            //music = menuMusic.CreateInstance();
-            //music.IsLooped = true;
-            //music.Play();
+            if (!hasMusicStarted)
+            {
+                music = menuMusic.CreateInstance();
+                music.IsLooped = true;
+                music.Play();
+                hasMusicStarted = true;
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

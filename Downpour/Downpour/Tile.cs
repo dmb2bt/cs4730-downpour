@@ -35,6 +35,7 @@ namespace Downpour
         public Texture2D Texture;
         public TileCollision Collision;
         public bool rain;
+        public bool water;
 
         public const int Width = 32;
         public const int Height = 32;
@@ -47,6 +48,16 @@ namespace Downpour
             Texture = texture;
             Collision = collision;
             this.rain = rain;
+            this.water = false;
+        }
+
+        // Constructs a new tile.
+        public Tile(Texture2D texture, TileCollision collision, bool rain, bool water)
+        {
+            Texture = texture;
+            Collision = collision;
+            this.rain = rain;
+            this.water = water;
         }
     }
 }
