@@ -32,6 +32,7 @@ namespace Downpour
 
         // Audio
         public SoundEffect footstepSound;
+        public SoundEffect deathSound;
 
         // Current level
         public Level Level
@@ -184,6 +185,7 @@ namespace Downpour
 
             // Load audio
             footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
+            deathSound = Level.Content.Load<SoundEffect>("Sound/death"); //*.wav
 
             // Calculate bounds within texture size.
             int width = (int)(normalIdleAnimation.FrameWidth * 1.0);
@@ -258,10 +260,19 @@ namespace Downpour
                 rainCount = 0;
 
                 // 50% chance rain goes up/down, staying within 1-3 range
+                // Volume of rain adjusts with rain level
                 Random random = new Random();
                 int up = random.Next(2);
-                if (up == 1 && rainLevel != 3) rainLevel++;
-                else if (rainLevel != 1) rainLevel--;
+                if (up == 1 && rainLevel != 3)
+                {
+                    rainLevel++;
+                    this.level.rainSoundInstance.Volume += 0.15f;
+                }
+                else if (rainLevel != 1)
+                {
+                    rainLevel--;
+                    this.level.rainSoundInstance.Volume -= 0.15f;
+                }
             }
             else rainCount++;
         }
@@ -570,6 +581,13 @@ namespace Downpour
 
         public void OnKilled()
         {
+            if (isAlive)
+            {
+                SoundEffectInstance deathSoundInstance = deathSound.CreateInstance();
+                deathSoundInstance.Volume = 0.75f;
+                deathSoundInstance.Play();
+            }
+
             isAlive = false;
         }
 

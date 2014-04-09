@@ -57,7 +57,11 @@ namespace Downpour
 
         // Audio
         public SoundEffect rainSound;
+        public SoundEffectInstance rainSoundInstance;
         public bool hasRainStarted = false;
+        public SoundEffect powerupSound;
+        public SoundEffect fireSound;
+        public SoundEffect firePieceSound;
 
         // Level game state.
         private float cameraPosition;
@@ -133,6 +137,9 @@ namespace Downpour
 
             // Load audio
             rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
+            powerupSound = Content.Load<SoundEffect>("Sound/burp"); //*.wav
+            fireSound = Content.Load<SoundEffect>("Sound/fire"); //*.wav
+            firePieceSound = Content.Load<SoundEffect>("Sound/fire_piece"); //*.wav
         }
 
         // Reads the JSON file made from Tiled and creates a new LevelData instance from
@@ -562,9 +569,10 @@ namespace Downpour
         {
             if (!hasRainStarted)
             {
-                var rain = rainSound.CreateInstance();
-                rain.IsLooped = true;
-                rain.Play();
+                rainSoundInstance = rainSound.CreateInstance();
+                rainSoundInstance.IsLooped = true;
+                rainSoundInstance.Volume = 0.5f;
+                rainSoundInstance.Play();
                 hasRainStarted = true;
             }
 
@@ -632,6 +640,8 @@ namespace Downpour
         private void OnPlayerKilled()
         {
             Player.OnKilled();
+            rainSoundInstance.Stop();
+            rainSoundInstance.Dispose();
         }
 
         // Called when the player reaches the level's exit.
@@ -639,6 +649,12 @@ namespace Downpour
         {
             if (firePieces.Count == 0)
             {
+                //SoundEffectInstance fireSoundInstance = fireSound.CreateInstance();
+                //fireSoundInstance.Play();
+
+                if(!reachedExit)
+                    fireSound.Play();
+
                 Player.OnReachedExit();
                 reachedExit = true;
                 exitAnimation.PlayAnimation(campfireAnimation);
@@ -649,12 +665,19 @@ namespace Downpour
         private void OnFirePieceCollected(FirePiece firepiece, Player collectedBy)
         {
             // TODO: Need to show piece collected
+            SoundEffectInstance firePieceSoundInstance = firePieceSound.CreateInstance();
+            firePieceSoundInstance.Play();
+
             firepiece.OnCollected(collectedBy);
         }
 
         private void OnPowerUpCollected(PowerUp powerup, Player collectedBy)
         {
-            // TODO: Need to do some animation or sound for pick up
+            SoundEffectInstance powerupSoundInstance = powerupSound.CreateInstance();
+            powerupSoundInstance.Pitch = 0.5f;
+            powerupSoundInstance.Volume = 1.0f;
+            powerupSoundInstance.Play();
+
             powerup.OnCollected(collectedBy);
         }
 

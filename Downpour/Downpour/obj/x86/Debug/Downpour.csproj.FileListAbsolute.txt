@@ -239,7 +239,6 @@ C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\trindentbside.png
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\tsideblindent.png
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\tsidebrindent.png
-<<<<<<< HEAD
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Backgrounds\levelbackground.png
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Backgrounds\MainMenu.png
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\mainmenu.wav
@@ -247,7 +246,6 @@ C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\noRain.png
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\rain1.png
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\rain3.png
-=======
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Backgrounds\levelbackground.png
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Backgrounds\MainMenu.png
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\FirePieces\flint.png
@@ -309,4 +307,11 @@ C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\practice.json
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\2.json
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\multilayer.json
->>>>>>> 8924ab67f868810534f14b6da5644df73350d97d
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\4.json
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\5.json
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\level.wav
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\burp.wav
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\death.wav
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\fire.wav
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\fire_piece.wav
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\3.json

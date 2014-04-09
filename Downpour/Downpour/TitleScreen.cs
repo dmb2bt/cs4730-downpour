@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Downpour
 {
@@ -15,9 +16,9 @@ namespace Downpour
     {
         private GraphicsDeviceManager graphics;
         private Texture2D texture;
-        private SoundEffect menuMusic;
-        private SoundEffectInstance music;
-        private bool hasMusicStarted;
+
+        Song menuSong;
+        Song levelSong;
 
         public Vector2 Position
         {
@@ -37,7 +38,7 @@ namespace Downpour
             graphics = gameGraphics;
             graphics.PreferredBackBufferHeight = 640;
             this.content = content;
-            hasMusicStarted = false;
+            //hasMenuMusicStarted = false;
 
             LoadContent();
         }
@@ -47,20 +48,23 @@ namespace Downpour
             Type = "TitleScreen";
             texture = Content.Load<Texture2D>("Backgrounds/MainMenu");
 
-            menuMusic = content.Load<SoundEffect>("Sound/mainmenu");
+            menuSong = Content.Load<Song>("Sound/mainmenu.wav");
+            MediaPlayer.Play(menuSong);
+            MediaPlayer.IsRepeating = true;
+            levelSong = Content.Load<Song>("Sound/level.wav");
         }
 
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
             GetInput(keyboardState, gamePadState);
 
-            if (!hasMusicStarted)
-            {
-                music = menuMusic.CreateInstance();
-                music.IsLooped = true;
-                music.Play();
-                hasMusicStarted = true;
-            }
+            //if (!hasMenuMusicStarted)
+            //{
+            //    menuMusicInstance = menuMusic.CreateInstance();
+            //    menuMusicInstance.IsLooped = true;
+            //    menuMusic.Play();
+            //    hasMenuMusicStarted = true;
+            //}
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -77,7 +81,9 @@ namespace Downpour
         {
             if (keyboardState.IsKeyDown(Keys.Enter) || gamePadState.Buttons.Start == ButtonState.Pressed)
             {
-                //music.Stop();
+                MediaPlayer.Volume = 0.25f;
+                MediaPlayer.Play(levelSong);
+
                 Game1.currentScreen.Type = "Level";
             }
         }

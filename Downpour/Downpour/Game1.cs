@@ -161,6 +161,15 @@ namespace Downpour
                 playTestingKeyPressing = false;
             }
 
+            // Hold R shift and then hit right or left to move through levels
+            if (keyboardState.IsKeyDown(Keys.RightShift))
+            {
+                if (keyboardState.IsKeyDown(Keys.Right))
+                    LoadNextLevel();
+                if (keyboardState.IsKeyDown(Keys.Left))
+                    LoadPreviousLevel();
+            }
+
             // Press a number along with the "-" key to decrease the variable that
             // corresponds to that number
             if (keyboardState.IsKeyDown(Keys.OemMinus)&&!minusPressing)
@@ -282,6 +291,12 @@ namespace Downpour
         private void ReloadCurrentLevel()
         {
             --levelIndex;
+            LoadNextLevel();
+        }
+
+        private void LoadPreviousLevel()
+        {
+            levelIndex -= 2;
             LoadNextLevel();
         }
 
