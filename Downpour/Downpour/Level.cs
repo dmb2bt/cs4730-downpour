@@ -56,9 +56,7 @@ namespace Downpour
         int lastRain;
 
         // Audio
-        public SoundEffect rainSound;
-        public SoundEffectInstance rainSoundInstance;
-        public bool hasRainStarted = false;
+        public Song levelSong;
         public SoundEffect powerupSound;
         public SoundEffect fireSound;
         public SoundEffect firePieceSound;
@@ -136,10 +134,12 @@ namespace Downpour
             }
 
             // Load audio
-            rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
+            //rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
             powerupSound = Content.Load<SoundEffect>("Sound/burp"); //*.wav
             fireSound = Content.Load<SoundEffect>("Sound/fire"); //*.wav
             firePieceSound = Content.Load<SoundEffect>("Sound/fire_piece"); //*.wav
+
+            levelSong = Content.Load<Song>("Sound/level.wav");
         }
 
         // Reads the JSON file made from Tiled and creates a new LevelData instance from
@@ -567,14 +567,6 @@ namespace Downpour
         // Updates all objects in the world and performs collision between them.
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
-            if (!hasRainStarted)
-            {
-                rainSoundInstance = rainSound.CreateInstance();
-                rainSoundInstance.IsLooped = true;
-                rainSoundInstance.Volume = 0.5f;
-                rainSoundInstance.Play();
-                hasRainStarted = true;
-            }
 
             // Pause while the player is dead or time is expired.
             if (!Player.IsAlive)
@@ -640,8 +632,6 @@ namespace Downpour
         private void OnPlayerKilled()
         {
             Player.OnKilled();
-            rainSoundInstance.Stop();
-            rainSoundInstance.Dispose();
         }
 
         // Called when the player reaches the level's exit.
@@ -666,6 +656,7 @@ namespace Downpour
         {
             // TODO: Need to show piece collected
             SoundEffectInstance firePieceSoundInstance = firePieceSound.CreateInstance();
+            firePieceSoundInstance.Volume = 0.5f;
             firePieceSoundInstance.Play();
 
             firepiece.OnCollected(collectedBy);
@@ -676,7 +667,9 @@ namespace Downpour
             SoundEffectInstance powerupSoundInstance = powerupSound.CreateInstance();
             powerupSoundInstance.Pitch = 0.5f;
             powerupSoundInstance.Volume = 1.0f;
-            powerupSoundInstance.Play();
+
+            if(!(powerup is Suit))
+                powerupSoundInstance.Play();
 
             powerup.OnCollected(collectedBy);
         }

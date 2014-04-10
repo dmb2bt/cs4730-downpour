@@ -315,3 +315,5 @@ C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\fire.wav
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\fire_piece.wav
 C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\3.json
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\6.json
+C:\Users\Rollin\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\7.json

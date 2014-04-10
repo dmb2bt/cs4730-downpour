@@ -57,14 +57,6 @@ namespace Downpour
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
             GetInput(keyboardState, gamePadState);
-
-            //if (!hasMenuMusicStarted)
-            //{
-            //    menuMusicInstance = menuMusic.CreateInstance();
-            //    menuMusicInstance.IsLooped = true;
-            //    menuMusic.Play();
-            //    hasMenuMusicStarted = true;
-            //}
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

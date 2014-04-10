@@ -266,12 +266,12 @@ namespace Downpour
                 if (up == 1 && rainLevel != 3)
                 {
                     rainLevel++;
-                    this.level.rainSoundInstance.Volume += 0.15f;
+                    Game1.rainSoundInstance.Volume += 0.15f;
                 }
                 else if (rainLevel != 1)
                 {
                     rainLevel--;
-                    this.level.rainSoundInstance.Volume -= 0.15f;
+                    Game1.rainSoundInstance.Volume -= 0.15f;
                 }
             }
             else rainCount++;
@@ -282,9 +282,9 @@ namespace Downpour
             if (footstepCount > 20 && isOnGround)
             {
                 footstepCount = 0;
-                //var footstep = footstepSound.CreateInstance();
-                //footstep.Play();
-                footstepSound.Play();
+                var footstep = footstepSound.CreateInstance();
+                footstep.Volume = 0.5f;
+                footstep.Play();
             }
             else footstepCount++;
         }

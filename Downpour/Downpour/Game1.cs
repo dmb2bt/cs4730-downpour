@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using System.IO;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace Downpour
@@ -59,7 +60,15 @@ namespace Downpour
         // levels in our content are 0-based and that all numbers under this constant
         // have a level file present. This allows us to not need to check for the file
         // or handle exceptions, both of which can add unnecessary time to level loading.
-        private const int numberOfLevels = 1;
+        private const int numberOfLevels = 8;
+
+        // Rain audio must be started here to avoid multiple instances
+        public SoundEffect rainSound;
+        public static SoundEffectInstance rainSoundInstance;
+        public bool hasRainStarted = false;
+
+        private bool muted = false;
+        private bool mReleased;
 
         // Constructor--note that all content should be in the Content directory
         public Game1()
@@ -100,6 +109,8 @@ namespace Downpour
             var fontFile = FontLoader.Load(fontFilePath);
             var fontTexture = Content.Load<Texture2D>("theFont_0.png");
             fontRenderer = new FontRenderer(fontFile, fontTexture);
+
+            rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
         }
 
         // UnloadContent will be called once per game and is the place to unload
@@ -109,6 +120,7 @@ namespace Downpour
             // Unload any non ContentManager content here
             level.Dispose();
             titleScreen.Dispose();
+            hasRainStarted = true;
         }
 
         protected void Restart()
@@ -140,6 +152,15 @@ namespace Downpour
             currentScreen.Update(gameTime, keyboardState, gamePadState);
 
             base.Update(gameTime);
+
+            if (!hasRainStarted)
+            {
+                rainSoundInstance = rainSound.CreateInstance();
+                rainSoundInstance.IsLooped = true;
+                rainSoundInstance.Volume = 0.25f;
+                rainSoundInstance.Play();
+                hasRainStarted = true;
+            }
         }
 
         // Takes in input from controller/keyboard
@@ -255,6 +276,27 @@ namespace Downpour
             }
 
             wasContinuePressed = continuePressed;
+
+            if (keyboardState.IsKeyDown(Keys.M) && mReleased)
+            {
+                if (!muted)
+                {
+                    MediaPlayer.Pause();
+                    SoundEffect.MasterVolume = 0.0f;
+                    muted = true;
+                }
+                else
+                {
+                    MediaPlayer.Resume();
+                    SoundEffect.MasterVolume = 1.0f;
+                    muted = false;
+                }
+
+                mReleased = false;
+            }
+
+            if (keyboardState.IsKeyUp(Keys.M))
+                mReleased = true;
         }
 
         private void LoadTitleScreen()
@@ -268,7 +310,7 @@ namespace Downpour
             // Move to the next level
             levelIndex++;
 
-            if (levelIndex == numberOfLevels)
+            if (levelIndex == numberOfLevels || levelIndex < -1)
             {
                 levelIndex = -1;
                 Restart();
@@ -297,6 +339,10 @@ namespace Downpour
         private void LoadPreviousLevel()
         {
             levelIndex -= 2;
+
+            if (levelIndex < -1)
+                levelIndex = numberOfLevels - 2;
+
             LoadNextLevel();
         }
 
