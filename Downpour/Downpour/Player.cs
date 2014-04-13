@@ -99,8 +99,8 @@ namespace Downpour
         private const Buttons JumpButton = Buttons.A;
 
         // Debugging Values
-        private const bool DEBUG_NO_RAIN_DAMAGE = false;
-        private const bool DEBUG_NO_WATER_DAMAGE = false;
+        private const bool DEBUG_NO_RAIN_DAMAGE = true;
+        private const bool DEBUG_NO_WATER_DAMAGE = true;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -402,7 +402,7 @@ namespace Downpour
                 }
 
                 // If we are in the ascent of the jump
-                if (0.0f < jumpTime && jumpTime <= MaxJumpTime)
+                if (0.0f < jumpTime && jumpTime <= MaxJumpTime && pressed)
                 {
                     // Fully override the vertical velocity with a power curve that gives players more control over the top of the jump
                     velocityY = JumpLaunchVelocity * 3 * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
