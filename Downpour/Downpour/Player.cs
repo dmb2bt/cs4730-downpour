@@ -32,7 +32,6 @@ namespace Downpour
 
         // Audio
         public SoundEffect footstepSound;
-        public SoundEffect deathSound;
 
         // Current level
         public Level Level
@@ -85,7 +84,7 @@ namespace Downpour
         public float MoveAcceleration = 11500.0f;
         public float MaxMoveSpeed = 500.0f;
         public float GroundDragFactor = 0.60f;
-        public float AirDragFactor = 0.60f;
+        public float AirDragFactor = 0.50f;
 
         // Constants for controlling vertical movement
         public float MaxJumpTime = 3.5f;
@@ -99,7 +98,7 @@ namespace Downpour
         private const Buttons JumpButton = Buttons.A;
 
         // Debugging Values
-        private const bool DEBUG_NO_RAIN_DAMAGE = true;
+        private const bool DEBUG_NO_RAIN_DAMAGE = false;
         private const bool DEBUG_NO_WATER_DAMAGE = true;
 
         // boolean for inverting keys 
@@ -158,8 +157,10 @@ namespace Downpour
             }
         }
 
+        AudioManager audio;
+
         // Constructs a new player.
-        public Player(Level level, Vector2 position)
+        public Player(Level level, Vector2 position, AudioManager audio)
         {
             this.level = level;
             this.life = BASE_PLAYER_LIFE;
@@ -170,6 +171,7 @@ namespace Downpour
             Reset(position);
             rainCount = 0;
             footstepCount = 0;
+            this.audio = audio;
         }
 
         // Loads the player sprite sheet and sounds.
@@ -185,7 +187,6 @@ namespace Downpour
 
             // Load audio
             footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
-            deathSound = Level.Content.Load<SoundEffect>("Sound/death"); //*.wav
 
             // Calculate bounds within texture size.
             int width = (int)(normalIdleAnimation.FrameWidth * 1.0);
@@ -266,12 +267,12 @@ namespace Downpour
                 if (up == 1 && rainLevel != 3)
                 {
                     rainLevel++;
-                    Game1.rainSoundInstance.Volume += 0.15f;
+                    audio.incrementRainVolume();
                 }
                 else if (rainLevel != 1)
                 {
                     rainLevel--;
-                    Game1.rainSoundInstance.Volume -= 0.15f;
+                    audio.decrementRainVolume();
                 }
             }
             else rainCount++;
@@ -282,9 +283,7 @@ namespace Downpour
             if (footstepCount > 20 && isOnGround)
             {
                 footstepCount = 0;
-                var footstep = footstepSound.CreateInstance();
-                footstep.Volume = 0.5f;
-                footstep.Play();
+                audio.playFootstepSound();
             }
             else footstepCount++;
         }
@@ -323,7 +322,7 @@ namespace Downpour
                      keyboardState.IsKeyDown(Keys.D))
             {
                 if (!IsOnGround)
-                    movement = 1.0f * jumpSpeedMultiplier;
+                    movement = 1.0f * jumpSpeedMultiplier * 1.1f;
                 else
                     movement = 1.0f * groundSpeedMultiplier;
             }
@@ -402,7 +401,7 @@ namespace Downpour
                 }
 
                 // If we are in the ascent of the jump
-                if (0.0f < jumpTime && jumpTime <= MaxJumpTime && pressed)
+                if (0.0f < jumpTime && jumpTime <= MaxJumpTime)
                 {
                     // Fully override the vertical velocity with a power curve that gives players more control over the top of the jump
                     velocityY = JumpLaunchVelocity * 3 * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
@@ -583,9 +582,7 @@ namespace Downpour
         {
             if (isAlive)
             {
-                SoundEffectInstance deathSoundInstance = deathSound.CreateInstance();
-                deathSoundInstance.Volume = 0.75f;
-                deathSoundInstance.Play();
+                audio.playDeathSound();
             }
 
             isAlive = false;

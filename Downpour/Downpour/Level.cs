@@ -29,6 +29,12 @@ namespace Downpour
     {
         public static ContentManager LibContent;
 
+        public AudioManager Audio
+        {
+            get { return audio; }
+        }
+        AudioManager audio;
+
         // Physical structure of the level.
         private Tile[,] tiles;
         private Layer[] layers;
@@ -93,10 +99,12 @@ namespace Downpour
         /// <param name="fileStream">
         /// A stream containing the tile data.
         /// </param>
-        public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
+        public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex, AudioManager audio)
         {
             // Create a new content manager to load content used just by this level.
             content = new ContentManager(serviceProvider, "Content");
+
+            this.audio = audio;
 
             var fontFilePath = Path.Combine(Content.RootDirectory, "theFont.fnt");
             var fontFile = FontLoader.Load(fontFilePath);
@@ -115,7 +123,7 @@ namespace Downpour
             // Initialize the player with 2000 life if this is the first level
             if (player == null)
             {
-                player = new Player(this, new Vector2());
+                player = new Player(this, new Vector2(), Audio);
             }
             LoadContent();
             LoadTiles(fileStream);
@@ -135,11 +143,11 @@ namespace Downpour
 
             // Load audio
             //rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
-            powerupSound = Content.Load<SoundEffect>("Sound/burp"); //*.wav
-            fireSound = Content.Load<SoundEffect>("Sound/fire"); //*.wav
-            firePieceSound = Content.Load<SoundEffect>("Sound/fire_piece"); //*.wav
+            //powerupSound = Content.Load<SoundEffect>("Sound/burp"); //*.wav
+            //fireSound = Content.Load<SoundEffect>("Sound/fire"); //*.wav
+            //firePieceSound = Content.Load<SoundEffect>("Sound/fire_piece"); //*.wav
 
-            levelSong = Content.Load<Song>("Sound/level.wav");
+            //levelSong = Content.Load<Song>("Sound/level.wav");
         }
 
         // Reads the JSON file made from Tiled and creates a new LevelData instance from
@@ -386,7 +394,7 @@ namespace Downpour
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
 
             // If this isn't the first level, initialize the player with the life he had left
-            player = new Player(this, start);
+            player = new Player(this, start, Audio);
 
             return LoadClearTile();
         }
@@ -397,7 +405,7 @@ namespace Downpour
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
 
             // If this isn't the first level, initialize the player with the life he had left
-            player = new Player(this, start);
+            player = new Player(this, start, Audio);
 
             return LoadRainTile();
         }
@@ -639,11 +647,8 @@ namespace Downpour
         {
             if (firePieces.Count == 0)
             {
-                //SoundEffectInstance fireSoundInstance = fireSound.CreateInstance();
-                //fireSoundInstance.Play();
-
                 if(!reachedExit)
-                    fireSound.Play();
+                    audio.playFireSound();
 
                 Player.OnReachedExit();
                 reachedExit = true;
@@ -655,21 +660,15 @@ namespace Downpour
         private void OnFirePieceCollected(FirePiece firepiece, Player collectedBy)
         {
             // TODO: Need to show piece collected
-            SoundEffectInstance firePieceSoundInstance = firePieceSound.CreateInstance();
-            firePieceSoundInstance.Volume = 0.5f;
-            firePieceSoundInstance.Play();
+            audio.playFirePieceSound();
 
             firepiece.OnCollected(collectedBy);
         }
 
         private void OnPowerUpCollected(PowerUp powerup, Player collectedBy)
         {
-            SoundEffectInstance powerupSoundInstance = powerupSound.CreateInstance();
-            powerupSoundInstance.Pitch = 0.5f;
-            powerupSoundInstance.Volume = 1.0f;
-
             if(!(powerup is Suit))
-                powerupSoundInstance.Play();
+                audio.playPowerupSound();
 
             powerup.OnCollected(collectedBy);
         }

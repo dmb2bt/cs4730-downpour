@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="AnimationPlayer.cs" />
+    <Compile Include="AudioManager.cs" />
     <Compile Include="Circle.cs" />
     <Compile Include="ControlInvertFruit.cs" />
     <Compile Include="FirePiece.cs" />

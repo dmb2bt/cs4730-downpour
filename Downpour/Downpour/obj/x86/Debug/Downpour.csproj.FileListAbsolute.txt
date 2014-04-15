@@ -35,7 +35,6 @@ C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.g.resources
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.exe
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.pdb
-C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\obj\x86\Debug\Downpour.csprojResolveAssemblyReference.cache
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\left.png
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\right.png
 C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Player\left_long.png
@@ -331,3 +330,17 @@ C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\3.json
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\4.json
 C:\Users\Brian\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\5.json
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\burp.wav
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\death.wav
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\fire.wav
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\fire_piece.wav
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Sound\level.wav
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\blbrindent.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\moon.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\tlblindent.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\trbrindent.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Tiles\water.png
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\2.json
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\3.json
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\4.json
+C:\Users\David\Documents\GitHub\cs4730-downpour\Downpour\Downpour\bin\WindowsGL\Debug\Content\Levels\5.json

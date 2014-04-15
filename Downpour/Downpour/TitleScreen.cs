@@ -17,9 +17,6 @@ namespace Downpour
         private GraphicsDeviceManager graphics;
         private Texture2D texture;
 
-        Song menuSong;
-        Song levelSong;
-
         public Vector2 Position
         {
             get { return Vector2.Zero; }
@@ -32,13 +29,16 @@ namespace Downpour
         }
         ContentManager content;
 
-        public TitleScreen(IServiceProvider gameServiceProvider, GraphicsDeviceManager gameGraphics, ContentManager content)
+        AudioManager audio;
+
+        public TitleScreen(IServiceProvider gameServiceProvider, GraphicsDeviceManager gameGraphics, ContentManager content, AudioManager audio)
             : base()
         {
             graphics = gameGraphics;
             graphics.PreferredBackBufferHeight = 640;
             this.content = content;
-            //hasMenuMusicStarted = false;
+            this.audio = audio;
+            audio.playMenuSong();
 
             LoadContent();
         }
@@ -47,11 +47,6 @@ namespace Downpour
         {
             Type = "TitleScreen";
             texture = Content.Load<Texture2D>("Backgrounds/MainMenu");
-
-            menuSong = Content.Load<Song>("Sound/mainmenu.wav");
-            MediaPlayer.Play(menuSong);
-            MediaPlayer.IsRepeating = true;
-            levelSong = Content.Load<Song>("Sound/level.wav");
         }
 
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
@@ -73,10 +68,10 @@ namespace Downpour
         {
             if (keyboardState.IsKeyDown(Keys.Enter) || gamePadState.Buttons.Start == ButtonState.Pressed)
             {
-                MediaPlayer.Volume = 0.25f;
-                MediaPlayer.Play(levelSong);
+                audio.stopMenuSong();
 
                 Game1.currentScreen.Type = "Level";
+                audio.playLevelSong();
             }
         }
 

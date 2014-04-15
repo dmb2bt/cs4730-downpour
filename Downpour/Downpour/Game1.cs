@@ -69,12 +69,12 @@ namespace Downpour
         private const int numberOfLevels = 8;
 
         // Rain audio must be started here to avoid multiple instances
-        public SoundEffect rainSound;
-        public static SoundEffectInstance rainSoundInstance;
         public bool hasRainStarted = false;
 
         private bool muted = false;
         private bool mReleased;
+
+        public AudioManager soundPlayer;
 
         // Constructor--note that all content should be in the Content directory
         public Game1()
@@ -103,6 +103,8 @@ namespace Downpour
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            soundPlayer = new AudioManager(Content);
+
             LoadTitleScreen();
             LoadNextLevel();
             currentScreen = titleScreen;
@@ -115,8 +117,7 @@ namespace Downpour
             var fontFile = FontLoader.Load(fontFilePath);
             var fontTexture = Content.Load<Texture2D>("theFont_0.png");
             fontRenderer = new FontRenderer(fontFile, fontTexture);
-
-            rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
+            //rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
         }
 
         // UnloadContent will be called once per game and is the place to unload
@@ -124,6 +125,8 @@ namespace Downpour
         protected override void UnloadContent()
         {
             // Unload any non ContentManager content here
+            soundPlayer.stopLevelSong();
+            soundPlayer.stopRainSound();
             level.Dispose();
             titleScreen.Dispose();
             hasRainStarted = true;
@@ -157,24 +160,17 @@ namespace Downpour
 
             if (!paused)
             {
-
                 // Update our level, passing down the GameTime along with all of our input states
                 currentScreen.Update(gameTime, keyboardState, gamePadState);
 
                 base.Update(gameTime);
 
-                if (!hasRainStarted)
+                if (!hasRainStarted && currentScreen == level)
                 {
-                    rainSoundInstance = rainSound.CreateInstance();
-                    rainSoundInstance.IsLooped = true;
-                    rainSoundInstance.Volume = 0.25f;
-                    rainSoundInstance.Play();
+                    soundPlayer.playRainSound();
                     hasRainStarted = true;
                 }
-
             }
-
-            
         }
 
         // Takes in input from controller/keyboard
@@ -327,7 +323,7 @@ namespace Downpour
 
         private void LoadTitleScreen()
         {
-            titleScreen = new TitleScreen(Services, graphics, Content);
+            titleScreen = new TitleScreen(Services, graphics, Content, soundPlayer);
         }
 
         // Loads the next screen
@@ -351,7 +347,7 @@ namespace Downpour
                 // Load the level.
                 string levelPath = string.Format("{0}/{1}/{2}.json", Content.RootDirectory, "Levels", levelIndex);
                 using (Stream fileStream = TitleContainer.OpenStream(levelPath))
-                    level = new Level(Services, fileStream, levelIndex);
+                    level = new Level(Services, fileStream, levelIndex, soundPlayer);
             }
         }
 
