@@ -35,6 +35,10 @@ namespace Downpour
         private HUD hud;
         private FontRenderer fontRenderer;
 
+        // Pause screen bool
+        private bool paused = false;
+        private bool pausePressing = false;
+
         // A boolean for the play-testing mode
         private bool playTesting;
         private bool playTestingKeyPressing;
@@ -51,7 +55,9 @@ namespace Downpour
         // We store our input states so that we only poll once per frame,
         // then we use the same input state wherever needed
         private GamePadState gamePadState;
+        private GamePadState oldGamePadState;
         private KeyboardState keyboardState;
+        private KeyboardState oldKeyboardState;
         private Texture2D winOverlay;
         private Texture2D diedOverlay;
         private Texture2D winOverallOverlay;
@@ -146,21 +152,29 @@ namespace Downpour
                     currentScreen = level;
                     break;
             }
+
             HandleInput();
 
-            // Update our level, passing down the GameTime along with all of our input states
-            currentScreen.Update(gameTime, keyboardState, gamePadState);
-
-            base.Update(gameTime);
-
-            if (!hasRainStarted)
+            if (!paused)
             {
-                rainSoundInstance = rainSound.CreateInstance();
-                rainSoundInstance.IsLooped = true;
-                rainSoundInstance.Volume = 0.25f;
-                rainSoundInstance.Play();
-                hasRainStarted = true;
+
+                // Update our level, passing down the GameTime along with all of our input states
+                currentScreen.Update(gameTime, keyboardState, gamePadState);
+
+                base.Update(gameTime);
+
+                if (!hasRainStarted)
+                {
+                    rainSoundInstance = rainSound.CreateInstance();
+                    rainSoundInstance.IsLooped = true;
+                    rainSoundInstance.Volume = 0.25f;
+                    rainSoundInstance.Play();
+                    hasRainStarted = true;
+                }
+
             }
+
+            
         }
 
         // Takes in input from controller/keyboard
@@ -249,7 +263,14 @@ namespace Downpour
                 minusPressing = false;
             if (keyboardState.IsKeyUp(Keys.OemPlus))
                 plusPressing = false;
-            
+
+            // Pause or unpause the game if the P or start buttons are pressed 
+            if ((oldKeyboardState.IsKeyUp(Keys.P)&&keyboardState.IsKeyDown(Keys.P))||
+                (oldGamePadState.IsButtonUp(Buttons.Start)&&gamePadState.IsButtonDown(Buttons.Start))&&
+                !currentScreen.Type.Equals("TitleScreen"))
+            {
+                paused = !paused;
+            }
 
             // Exit the game when back button or escape key is pressed.
             if ((gamePadState.Buttons.Back == ButtonState.Pressed) || (keyboardState.IsKeyDown(Keys.Escape)))
@@ -296,7 +317,12 @@ namespace Downpour
             }
 
             if (keyboardState.IsKeyUp(Keys.M))
+            {
                 mReleased = true;
+            }
+
+            oldGamePadState = gamePadState;
+            oldKeyboardState = keyboardState;
         }
 
         private void LoadTitleScreen()
@@ -351,11 +377,14 @@ namespace Downpour
         protected override void Draw(GameTime gameTime)
         {
             graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            //TODO delete? // hud.Draw(spriteBatch, fontRenderer);
             
             currentScreen.Draw(gameTime, spriteBatch);
             DrawHud();
+
+            if (paused)
+            {
+                DrawPauseScreen();
+            }
 
             base.Draw(gameTime);
         }
@@ -416,6 +445,16 @@ namespace Downpour
                 fontRenderer.DrawText(spriteBatch, offset, 290, level.Player.JumpControlPower.ToString());
                 fontRenderer.DrawText(spriteBatch, offset, 320, level.Player.speedMultiplierStep.ToString());
             }
+
+            spriteBatch.End();
+        }
+
+        private void DrawPauseScreen()
+        {
+            spriteBatch.Begin();
+
+            fontRenderer.DrawText(spriteBatch, 350, 275, "PAUSED");
+            fontRenderer.DrawText(spriteBatch, 225, 300, "press (p) or (start) to continue");
 
             spriteBatch.End();
         }

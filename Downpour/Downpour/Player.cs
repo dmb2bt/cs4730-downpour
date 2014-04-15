@@ -85,7 +85,7 @@ namespace Downpour
         public float MoveAcceleration = 11500.0f;
         public float MaxMoveSpeed = 500.0f;
         public float GroundDragFactor = 0.60f;
-        public float AirDragFactor = 0.50f;
+        public float AirDragFactor = 0.60f;
 
         // Constants for controlling vertical movement
         public float MaxJumpTime = 3.5f;
@@ -119,7 +119,7 @@ namespace Downpour
             get { return shieldLife; }
         }
         private int shieldLife = 0;
-        private const int SHIELD_MAX_LIFE = 500;
+        private const int SHIELD_MAX_LIFE = 600;
 
         // Rain values
         bool rainedOn;
