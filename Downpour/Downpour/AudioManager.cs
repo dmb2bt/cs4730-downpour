@@ -87,7 +87,7 @@ namespace Downpour
         public void playRainSound()
         {
             rain.IsLooped = true;
-            rain.Volume = 0.5f;
+            rain.Volume = 0.75f;
             rain.Play();
         }
 

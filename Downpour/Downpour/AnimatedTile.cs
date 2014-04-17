@@ -15,6 +15,7 @@ namespace Downpour
             set { animation = value; }
         }
         Animation animation;
+        public int rainCol;
         // Gets the index of the current frame in the animation.
         public int FrameIndex
         {
@@ -37,7 +38,18 @@ namespace Downpour
             this.animation = animation;
             frameIndex = 0;
             time = 0.0f;
+            rainCol = 1;
         }
+
+        public AnimatedTile(Animation animation, TileCollision collision, bool rain, bool water, int rainCol)
+            :base(collision, rain, water)
+        {
+            this.animation = animation;
+            frameIndex = 0;
+            time = 0.0f;
+            this.rainCol = rainCol;
+        }
+
 
         public void ChangeAnimation(Animation animation)
         {

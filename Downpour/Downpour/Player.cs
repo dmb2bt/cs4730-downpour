@@ -27,6 +27,8 @@ namespace Downpour
         private Animation suitRunAnimation;
         private Animation invulnerableIdleAnimation;
         private Animation invulnerableRunAnimation;
+        private Animation invulnerableSuitIdleAnimation;
+        private Animation invulnerableSuitRunAnimation;
         private SpriteEffects flip = SpriteEffects.None;
         private AnimationPlayer sprite;
 
@@ -184,6 +186,8 @@ namespace Downpour
             suitRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/suit_left"), 0.1f, true);
             invulnerableIdleAnimation  = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_idle"), 0.1f, true);
             invulnerableRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_left"), 0.1f, true);
+            invulnerableSuitIdleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_suit_idle"), 0.1f, true);
+            invulnerableSuitRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_suit_left"), 0.1f, true);
 
             // Load audio
             footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
@@ -232,7 +236,12 @@ namespace Downpour
                             sprite.PlayAnimation(normalRunAnimation);
                     }
                     else
-                        sprite.PlayAnimation(suitRunAnimation);
+                    {
+                        if (IsInvulnerable)
+                            sprite.PlayAnimation(invulnerableSuitRunAnimation);
+                        else
+                            sprite.PlayAnimation(suitRunAnimation);
+                    }
                 }
                 else
                 {
@@ -244,7 +253,12 @@ namespace Downpour
                             sprite.PlayAnimation(normalIdleAnimation);
                     }
                     else
-                        sprite.PlayAnimation(suitIdleAnimation);
+                    {
+                        if (IsInvulnerable)
+                            sprite.PlayAnimation(invulnerableSuitIdleAnimation);
+                        else
+                            sprite.PlayAnimation(suitIdleAnimation);
+                    }
                 }
             }
 
@@ -256,7 +270,7 @@ namespace Downpour
         // Updates the rain level every 50 updates.
         public void changeRain(GameTime gameTime)
         {
-            if (rainCount > 120)
+            if (rainCount > 50)
             {
                 rainCount = 0;
 

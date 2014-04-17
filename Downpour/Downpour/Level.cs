@@ -41,7 +41,8 @@ namespace Downpour
         // The layer which entities are drawn on top of.
         private const int EntityLayer = 1;
 
-        private List<Animation> rainAnimations;
+        private Animation[,] rainAnimations;
+        private int[] rainCols;
         private List<AnimatedTile> rainTiles;
 
         // Entities in the level.
@@ -133,24 +134,23 @@ namespace Downpour
         public override void LoadContent()
         {
             Type = "Level";
-            rainAnimations = new List<Animation>();
+            rainAnimations = new Animation[3, 5];
             rainTiles = new List<AnimatedTile>();
-
-            campfireAnimation = new Animation(Content.Load<Texture2D>("Tiles/campfire"), 0.1f, true);
-            for (int i = 1; i < 4; i++)
+            rainCols = new int[150];
+            for (int i = 0; i < 150; i++)
             {
-                Texture2D texture = Content.Load<Texture2D>(String.Format("Tiles/rain{0}col1", i));
-
-                rainAnimations.Add(new Animation(texture, 0.075f, true));
+                rainCols[i] = random.Next(1, 6);
             }
 
-            // Load audio
-            //rainSound = Content.Load<SoundEffect>("Sound/rain"); //*.wav
-            //powerupSound = Content.Load<SoundEffect>("Sound/burp"); //*.wav
-            //fireSound = Content.Load<SoundEffect>("Sound/fire"); //*.wav
-            //firePieceSound = Content.Load<SoundEffect>("Sound/fire_piece"); //*.wav
-
-            //levelSong = Content.Load<Song>("Sound/level.wav");
+            campfireAnimation = new Animation(Content.Load<Texture2D>("Tiles/campfire"), 0.1f, true);
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    Texture2D texture = Content.Load<Texture2D>(String.Format("Tiles/rain{0}col{1}", (i+1), (j+1)));
+                    rainAnimations[i, j] = new Animation(texture, 0.075f, true);
+                }
+            }
         }
 
         // Reads the JSON file made from Tiled and creates a new LevelData instance from
@@ -359,7 +359,7 @@ namespace Downpour
                     return LoadExitTile(x, y);
 
                 case 127:
-                    return LoadRainTile();
+                    return LoadRainTile(x, y);
 
                 case 128: 
                     return LoadStartTile(x, y);
@@ -370,9 +370,11 @@ namespace Downpour
         }
 
         // Air with rain
-        private Tile LoadRainTile()
+        private Tile LoadRainTile(int x, int y)
         {
-            Tile tile = LoadAnimatedTile("rain2col1", TileCollision.Passable, true, false);
+            int columnNum = rainCols[x];
+
+            Tile tile = LoadAnimatedTile(String.Format("rain2col{0}", columnNum), TileCollision.Passable, true, false, columnNum);
 
             rainTiles.Add((AnimatedTile)tile);
             return tile;
@@ -404,6 +406,11 @@ namespace Downpour
             return new AnimatedTile(new Animation(Content.Load<Texture2D>("Tiles/" + name), 0.075f, true), collision, rain, water);
         }
 
+        private Tile LoadAnimatedTile(string name, TileCollision collision, bool rain, bool water, int columnNum)
+        {
+            return new AnimatedTile(new Animation(Content.Load<Texture2D>("Tiles/" + name), 0.075f, true), collision, rain, water, columnNum);
+        }
+
         // Instantiates a player, puts him in the level, and remembers where to put him when he is resurrected.
         private Tile LoadStartTile(int x, int y)
         {
@@ -423,7 +430,7 @@ namespace Downpour
             // If this isn't the first level, initialize the player with the life he had left
             player = new Player(this, start, Audio);
 
-            return LoadRainTile();
+            return LoadRainTile(x, y);
         }
 
         // Remembers the location of the level's exit.
@@ -624,7 +631,7 @@ namespace Downpour
         {
             foreach (AnimatedTile tile in rainTiles)
             {
-                tile.ChangeAnimation(rainAnimations[lastRain - 1]);
+                tile.ChangeAnimation(rainAnimations[lastRain - 1, tile.rainCol - 1]);
             }
         }
 
