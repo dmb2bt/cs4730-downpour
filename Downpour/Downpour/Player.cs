@@ -84,7 +84,7 @@ namespace Downpour
         public float MoveAcceleration = 11500.0f;
         public float MaxMoveSpeed = 500.0f;
         public float GroundDragFactor = 0.60f;
-        public float AirDragFactor = 0.50f;
+        public float AirDragFactor = 0.60f;
 
         // Constants for controlling vertical movement
         public float MaxJumpTime = 3.5f;
@@ -99,7 +99,7 @@ namespace Downpour
 
         // Debugging Values
         private const bool DEBUG_NO_RAIN_DAMAGE = false;
-        private const bool DEBUG_NO_WATER_DAMAGE = true;
+        private const bool DEBUG_NO_WATER_DAMAGE = false;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -256,7 +256,7 @@ namespace Downpour
         // Updates the rain level every 50 updates.
         public void changeRain(GameTime gameTime)
         {
-            if (rainCount > 50)
+            if (rainCount > 120)
             {
                 rainCount = 0;
 
@@ -322,7 +322,7 @@ namespace Downpour
                      keyboardState.IsKeyDown(Keys.D))
             {
                 if (!IsOnGround)
-                    movement = 1.0f * jumpSpeedMultiplier * 1.1f;
+                    movement = 1.0f * jumpSpeedMultiplier;
                 else
                     movement = 1.0f * groundSpeedMultiplier;
             }
@@ -612,6 +612,7 @@ namespace Downpour
         {
             IsInvulnerable = true;
             invulnerabilityTime = 0.0f;
+            audio.playInvulnerabilitySound();
         }
 
         public void InvertControls()

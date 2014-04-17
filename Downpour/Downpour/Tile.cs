@@ -30,7 +30,7 @@ namespace Downpour
     }
 
     // Stores the appearance and collision behavior of a tile.
-    public struct Tile
+    public class Tile
     {
         public Texture2D Texture;
         public TileCollision Collision;
@@ -51,13 +51,24 @@ namespace Downpour
             this.water = false;
         }
 
-        // Constructs a new tile.
         public Tile(Texture2D texture, TileCollision collision, bool rain, bool water)
         {
             Texture = texture;
             Collision = collision;
             this.rain = rain;
             this.water = water;
+        }
+        // Constructs a new tile.
+        public Tile(TileCollision collision, bool rain, bool water)
+        {
+            //Texture = texture;
+            Collision = collision;
+            this.rain = rain;
+            this.water = water;
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 position)
+        {
         }
     }
 }

@@ -30,6 +30,8 @@ namespace Downpour
         SoundEffectInstance footstep;
         SoundEffect rainSound;
         SoundEffectInstance rain;
+        SoundEffect invulnerabilitySound;
+        SoundEffectInstance invulnerability;
 
         public AudioManager(ContentManager manager)
         {
@@ -54,6 +56,8 @@ namespace Downpour
             footstepSound = content.Load<SoundEffect>("Sound/footstep");
             rainSound = content.Load<SoundEffect>("Sound/rain");
             rain = rainSound.CreateInstance();
+            invulnerabilitySound = content.Load<SoundEffect>("Sound/invulnerability");
+            invulnerability = invulnerabilitySound.CreateInstance();
         }
 
         public void playMenuSong()
@@ -139,5 +143,14 @@ namespace Downpour
             footstep.Play();
         }
 
+        public void playInvulnerabilitySound()
+        {
+            invulnerability.Volume = 0.75f;
+            invulnerability.Play();
+        }
+        public void stopInvulnerabilitySound()
+        {
+            invulnerability.Stop();
+        }
     }
 }

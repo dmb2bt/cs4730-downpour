@@ -16,7 +16,7 @@ namespace Downpour
     // Currently, this class assumes that each frame of animation is
     // as wide as each animation is tall. The number of frames in the
     // animation are inferred from this.
-    class Animation
+    public class Animation
     {
         // All frames in the animation arranged horizontally.
         public Texture2D Texture

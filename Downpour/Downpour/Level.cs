@@ -41,7 +41,8 @@ namespace Downpour
         // The layer which entities are drawn on top of.
         private const int EntityLayer = 1;
 
-        private List<Texture2D> rainTextures;
+        private List<Animation> rainAnimations;
+        private List<AnimatedTile> rainTiles;
 
         // Entities in the level.
         public Player Player
@@ -132,13 +133,15 @@ namespace Downpour
         public override void LoadContent()
         {
             Type = "Level";
-            rainTextures = new List<Texture2D>();
+            rainAnimations = new List<Animation>();
+            rainTiles = new List<AnimatedTile>();
 
             campfireAnimation = new Animation(Content.Load<Texture2D>("Tiles/campfire"), 0.1f, true);
-            for (int i = 0; i < 4; i++)
+            for (int i = 1; i < 4; i++)
             {
-                Texture2D texture = Content.Load<Texture2D>("Tiles/rain" + i);
-                rainTextures.Add(texture);
+                Texture2D texture = Content.Load<Texture2D>(String.Format("Tiles/rain{0}col1", i));
+
+                rainAnimations.Add(new Animation(texture, 0.075f, true));
             }
 
             // Load audio
@@ -245,112 +248,112 @@ namespace Downpour
                     return LoadClearTile();
 
                 case 1:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tlcorner"), TileCollision.Impassable, false);
+                    return LoadTile("tlcorner", TileCollision.Impassable, false);
 
                 case 2:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tside"), TileCollision.Impassable, false);
+                    return LoadTile("tside", TileCollision.Impassable, false);
 
                 case 3:
-                    return new Tile(Content.Load<Texture2D>("Tiles/trcorner"), TileCollision.Impassable, false);
+                    return LoadTile("trcorner", TileCollision.Impassable, false);
 
                 case 4: 
-                    return new Tile(Content.Load<Texture2D>("Tiles/lrtside"), TileCollision.Impassable, false);
+                    return LoadTile("lrtside", TileCollision.Impassable, false);
 
                 case 5:
-                    return new Tile(Content.Load<Texture2D>("Tiles/brindent"), TileCollision.Impassable, false);
+                    return LoadTile("brindent", TileCollision.Impassable, false);
 
                 case 6:
-                    return new Tile(Content.Load<Texture2D>("Tiles/blindent"), TileCollision.Impassable, false);
+                    return LoadTile("blindent", TileCollision.Impassable, false);
 
                 case 7:
-                    return new Tile(Content.Load<Texture2D>("Tiles/trbrindent"), TileCollision.Impassable, false);
+                    return LoadTile("trbrindent", TileCollision.Impassable, false);
 
                 case 8:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tlblindent"), TileCollision.Impassable, false);
+                    return LoadTile("tlblindent", TileCollision.Impassable, false);
 
                 case 9:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lside"), TileCollision.Impassable, false);
+                    return LoadTile("lside", TileCollision.Impassable, false);
 
                 case 10:
-                    return new Tile(Content.Load<Texture2D>("Tiles/center"), TileCollision.Impassable, false);
+                    return LoadTile("center", TileCollision.Impassable, false);
 
                 case 11:
-                    return new Tile(Content.Load<Texture2D>("Tiles/rside"), TileCollision.Impassable, false);
+                    return LoadTile("rside", TileCollision.Impassable, false);
 
                 case 12:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lrside"), TileCollision.Impassable, false);
+                    return LoadTile("lrside", TileCollision.Impassable, false);
 
                 case 13:
-                    return new Tile(Content.Load<Texture2D>("Tiles/trindent"), TileCollision.Impassable, false);
+                    return LoadTile("trindent", TileCollision.Impassable, false);
 
                 case 14:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tlindent"), TileCollision.Impassable, false);
+                    return LoadTile("tlindent", TileCollision.Impassable, false);
 
                 case 15:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tltrindent"), TileCollision.Impassable, false);
+                    return LoadTile("tltrindent", TileCollision.Impassable, false);
 
                 case 16:
-                    return new Tile(Content.Load<Texture2D>("Tiles/blbrindent"), TileCollision.Impassable, false);
+                    return LoadTile("blbrindent", TileCollision.Impassable, false);
 
                 case 17:
-                    return new Tile(Content.Load<Texture2D>("Tiles/blcorner"), TileCollision.Impassable, false);
+                    return LoadTile("blcorner", TileCollision.Impassable, false);
 
                 case 18:
-                    return new Tile(Content.Load<Texture2D>("Tiles/bside"), TileCollision.Impassable, false);
+                    return LoadTile("bside", TileCollision.Impassable, false);
 
                 case 19:
-                    return new Tile(Content.Load<Texture2D>("Tiles/brcorner"), TileCollision.Impassable, false);
+                    return LoadTile("brcorner", TileCollision.Impassable, false);
 
                 case 20:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lbrside"), TileCollision.Impassable, false);
+                    return LoadTile("lbrside", TileCollision.Impassable, false);
 
                 case 21:
-                    return new Tile(Content.Load<Texture2D>("Tiles/moon"), TileCollision.Impassable, false);
+                    return LoadTile("moon", TileCollision.Impassable, false);
 
                 case 22:
-                    return new Tile(Content.Load<Texture2D>("Tiles/grass1"), TileCollision.Passable, false);
+                    return LoadTile("grass1", TileCollision.Passable, false);
 
                 case 23:
-                    return new Tile(Content.Load<Texture2D>("Tiles/grass2"), TileCollision.Passable, false);
+                    return LoadTile("grass2", TileCollision.Passable, false);
 
                 case 24:
-                    return new Tile(Content.Load<Texture2D>("Tiles/vines"), TileCollision.Passable, false);
+                    return LoadTile("vines", TileCollision.Passable, false);
 
                 case 25:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lsidetrindent"), TileCollision.Impassable, false);
+                    return LoadTile("lsidetrindent", TileCollision.Impassable, false);
 
                 case 26:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tlindentrside"), TileCollision.Impassable, false);
+                    return LoadTile("tlindentrside", TileCollision.Impassable, false);
 
                 case 27:
-                    return new Tile(Content.Load<Texture2D>("Tiles/ltbside"), TileCollision.Impassable, false);
+                    return LoadTile("ltbside", TileCollision.Impassable, false);
 
                 case 28:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tbside"), TileCollision.Impassable, false);
+                    return LoadTile("tbside", TileCollision.Impassable, false);
 
                 case 29:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tbrside"), TileCollision.Impassable, false);
+                    return LoadTile("tbrside", TileCollision.Impassable, false);
 
                 case 30:
-                    return new Tile(Content.Load<Texture2D>("Tiles/water"), TileCollision.Passable, false, true);
+                    return LoadWaterTile();
 
                 case 33:
-                    return new Tile(Content.Load<Texture2D>("Tiles/lsidebrindent"), TileCollision.Impassable, false);
+                    return LoadTile("lsidebrindent", TileCollision.Impassable, false);
 
                 case 34:
-                    return new Tile(Content.Load<Texture2D>("Tiles/blindentrside"), TileCollision.Impassable, false);
+                    return LoadTile("blindentrside", TileCollision.Impassable, false);
 
                 case 41:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tsideblindent"), TileCollision.Impassable, false);
+                    return LoadTile("tsideblindent", TileCollision.Impassable, false);
                 
                 case 42:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tsidebrindent"), TileCollision.Impassable, false);
+                    return LoadTile("tsidebrindent", TileCollision.Impassable, false);
                 
                 case 49:
-                    return new Tile(Content.Load<Texture2D>("Tiles/tlindentbside"), TileCollision.Impassable, false);
+                    return LoadTile("tlindentbside", TileCollision.Impassable, false);
                 
                 case 50:
-                    return new Tile(Content.Load<Texture2D>("Tiles/trindentbside"), TileCollision.Impassable, false);
+                    return LoadTile("trindentbside", TileCollision.Impassable, false);
 
                 case 126:
                     return LoadExitTile(x, y);
@@ -369,12 +372,15 @@ namespace Downpour
         // Air with rain
         private Tile LoadRainTile()
         {
-            return LoadTile("rain2", TileCollision.Passable, true);
+            Tile tile = LoadAnimatedTile("rain2col1", TileCollision.Passable, true, false);
+
+            rainTiles.Add((AnimatedTile)tile);
+            return tile;
         }
 
         private Tile LoadWaterTile()
         {
-            return LoadTile("water", TileCollision.Passable, true);
+            return LoadAnimatedTile("waterAnimation", TileCollision.Passable, false, true);
         }
 
         // Air without rain
@@ -385,7 +391,17 @@ namespace Downpour
 
         private Tile LoadTile(string name, TileCollision collision, bool rain)
         {
-            return new Tile(Content.Load<Texture2D>("Tiles/" + name), collision, rain);
+            return new StaticTile(Content.Load<Texture2D>("Tiles/" + name), collision, rain, false);
+        }
+
+        private Tile LoadTile(string name, TileCollision collision, bool rain, bool water)
+        {
+            return new StaticTile(Content.Load<Texture2D>("Tiles/" + name), collision, rain, water);
+        }
+
+        private Tile LoadAnimatedTile(string name, TileCollision collision, bool rain, bool water)
+        {
+            return new AnimatedTile(new Animation(Content.Load<Texture2D>("Tiles/" + name), 0.075f, true), collision, rain, water);
         }
 
         // Instantiates a player, puts him in the level, and remembers where to put him when he is resurrected.
@@ -587,6 +603,7 @@ namespace Downpour
                 Player.Update(gameTime,keyboardState,gamePadState);
                 UpdateFirePieces(gameTime);
                 UpdatePowerUps(gameTime);
+                UpdateRainTiles(gameTime);
 
                 // Falling off the bottom of the level kills the player.
                 if (Player.BoundingRectangle.Top >= Height * Tile.Height)
@@ -601,6 +618,14 @@ namespace Downpour
                     OnExitReached();
                 }
             }           
+        }
+
+        private void UpdateRainTiles(GameTime gameTime)
+        {
+            foreach (AnimatedTile tile in rainTiles)
+            {
+                tile.ChangeAnimation(rainAnimations[lastRain - 1]);
+            }
         }
 
         private void UpdateFirePieces(GameTime gameTime)
@@ -688,14 +713,8 @@ namespace Downpour
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            // Update the background to match the rain level
-            if (lastRain != player.rainLevel)
-            {
-               // This should probably not be loading content in the Draw method...
-               //layers[1].Texture = Content.Load<Texture2D>("rain" + player.rainLevel + ".png");
-            }
             lastRain = player.rainLevel;
-            
+
             // Draw background up to entity layer
             for (int i = 0; i < EntityLayer; ++i)
                 layers[i].Draw(spriteBatch, cameraPosition);
@@ -705,7 +724,7 @@ namespace Downpour
             Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, cameraTransform);
             // Draw tiles
-            DrawTiles(spriteBatch);
+            DrawTiles(gameTime, spriteBatch);
 
             // Draw player
             Player.Draw(gameTime, spriteBatch);
@@ -745,7 +764,7 @@ namespace Downpour
             spriteBatch.End();
         }
 
-        public void DrawTiles(SpriteBatch spriteBatch)
+        public void DrawTiles(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // Calculate the visible range of tiles
             int left = (int) Math.Floor(cameraPosition / Tile.Width);
@@ -757,17 +776,20 @@ namespace Downpour
                 for (int x = left; x <= right; ++x)
                 {
                     // If there is a visible tile in that position
-                    if (tiles[x, y].rain)
+                    Tile tile = tiles[x, y];
+                    
+                    
+                    Vector2 position;
+                    if (tile.rain || tile.water)
                     {
-                        tiles[x, y].Texture = rainTextures[lastRain];
+                        position = new Vector2(x, y) * new Vector2(32, 32);
+                        position += new Vector2(16, 32);
                     }
-                    Texture2D texture = tiles[x, y].Texture;
-                    if (texture != null)
+                    else
                     {
-                        // Draw it in screen space.
-                        Vector2 position = new Vector2(x, y) * Tile.Size;
-                        spriteBatch.Draw(texture, position, Color.White);
+                        position = new Vector2(x, y) * Tile.Size;
                     }
+                    tile.Draw(gameTime, spriteBatch, position);
                 }
             }
         }
