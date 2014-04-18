@@ -66,7 +66,8 @@ namespace Downpour
         public const float BASE_POWERUP_MULTIPLIER = 1.0f;
         public float groundSpeedMultiplier = 1.0f;
         public float jumpSpeedMultiplier = 1.0f;
-        public float speedMultiplierStep = 2.0f;
+        public float groundSpeedMultiplierStep = 2.0f;
+        public float jumpSpeedMultiplierStep = 1.5f;
 
         private bool SpeedBoosted = false;
         private bool JumpBoosted = false;
@@ -78,7 +79,9 @@ namespace Downpour
         private const float JumpBoostDuration = 5.0f;
         private const float InvulnerabilityDuration = 5.0f;
 
-        private const int waterDamage = 5;
+        // Constants for controlling the damage taken from rain and water
+        private const float rainDamage = 1.4f;
+        private const float waterDamage = 5.0f;
 
         // Constants for controlling horizontal movement
         public float MoveAcceleration = 11500.0f;
@@ -105,20 +108,20 @@ namespace Downpour
         private bool controlsInverted = false;
 
         // Default starting life is set in Level.cs at 2000
-        public int Life
+        public float Life
         {
             get { return life; }
             set { life = value; }
         }
-        private int life;
-        public const int BASE_PLAYER_LIFE = 2000;
+        private float life;
+        public const float BASE_PLAYER_LIFE = 2000.0f;
 
         // Creates an Umbrella shield that decreases before player life
-        public int ShieldLife{
+        public float ShieldLife{
             get { return shieldLife; }
         }
-        private int shieldLife = 0;
-        private const int SHIELD_MAX_LIFE = 600;
+        private float shieldLife = 0.0f;
+        private const float SHIELD_MAX_LIFE = 800.0f;
 
         // Rain values
         bool rainedOn;
@@ -209,6 +212,11 @@ namespace Downpour
 
         public void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
+            if (this.level.ReachedExit)
+            {
+                sprite.PlayAnimation(normalIdleAnimation);
+            }
+
             UpdateTimers(gameTime);
             GetInput(keyboardState, gamePadState);
             ApplyPhysics(gameTime);
@@ -332,16 +340,13 @@ namespace Downpour
             {
                 isJumping =
                     gamePadState.IsButtonDown(JumpButton) ||
-                    keyboardState.IsKeyDown(Keys.Space) ||
                     keyboardState.IsKeyDown(Keys.Up) ||
                     keyboardState.IsKeyDown(Keys.W);
                 pressed = isJumping;
-
             }
             else
             {
                 pressed = gamePadState.IsButtonDown(JumpButton) ||
-                    keyboardState.IsKeyDown(Keys.Space) ||
                     keyboardState.IsKeyDown(Keys.Up) ||
                     keyboardState.IsKeyDown(Keys.W);
             }
@@ -389,6 +394,7 @@ namespace Downpour
 
         private float DoJump(float velocityY, GameTime gameTime)
         {
+
             // If the player wants to jump
             if (isJumping || wasJumping)
             {
@@ -405,9 +411,11 @@ namespace Downpour
                 {
                     // Fully override the vertical velocity with a power curve that gives players more control over the top of the jump
                     velocityY = JumpLaunchVelocity * 3 * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
-                    if (JumpBoosted)
+                    if (JumpBoosted) { 
                         velocityY *= .45f * jumpSpeedMultiplier;
+                    }
                 }
+                
                 else
                 {
                     // Reached the apex of the jump
@@ -419,6 +427,7 @@ namespace Downpour
                 // Continues not jumping or cancels a jump in progress
                 jumpTime = 0.0f;
             }
+
             wasJumping = isJumping;
 
             return velocityY;
@@ -496,7 +505,7 @@ namespace Downpour
             {
                 if (shieldLife > 0)
                 {
-                    shieldLife -= this.rainLevel;
+                    shieldLife -= this.rainLevel * rainDamage;
                 }
                 else
                 {
@@ -506,7 +515,7 @@ namespace Downpour
                         this.life += shieldLife;
                         shieldLife = 0;
                     }
-                    this.life -= this.rainLevel;
+                    this.life -= this.rainLevel * rainDamage;
                     if (this.life <= 0)
                     {
                         OnKilled();
@@ -590,22 +599,21 @@ namespace Downpour
 
         public void OnReachedExit()
         {
-            // Should the player freeze here?
-            // Right now they can continue to move after finishing the level.
+            sprite.PlayAnimation(normalIdleAnimation);
         }
 
         public void ApplySpeedBoost()
         {
             SpeedBoosted = true;
             speedBoostTime = 0.0f;
-            groundSpeedMultiplier += speedMultiplierStep;
+            groundSpeedMultiplier += groundSpeedMultiplierStep;
         }
 
         public void ApplyJumpBoost()
         {
             JumpBoosted = true;
             jumpBoostTime = 0.0f;
-            jumpSpeedMultiplier += speedMultiplierStep;
+            jumpSpeedMultiplier += jumpSpeedMultiplierStep;
         }
 
         public void ApplyInvulnerability()

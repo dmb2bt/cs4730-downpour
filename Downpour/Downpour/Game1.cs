@@ -158,7 +158,12 @@ namespace Downpour
 
             HandleInput();
 
-            if (!paused)
+            if (level.ReachedExit)
+            {
+                level.Player.OnReachedExit();
+            }
+
+            if (!paused && !level.ReachedExit)
             {
                 // Update our level, passing down the GameTime along with all of our input states
                 currentScreen.Update(gameTime, keyboardState, gamePadState);
@@ -225,7 +230,7 @@ namespace Downpour
                 if (keyboardState.IsKeyDown(Keys.D9))
                     level.Player.JumpControlPower -= 0.05f;
                 if (keyboardState.IsKeyDown(Keys.D0))
-                    level.Player.speedMultiplierStep -= 0.05f;
+                    level.Player.groundSpeedMultiplierStep -= 0.05f;
             }
 
             // Press a number along with the "+" key to decrease the variable that
@@ -252,7 +257,7 @@ namespace Downpour
                 if (keyboardState.IsKeyDown(Keys.D9))
                     level.Player.JumpControlPower += 0.05f;
                 if (keyboardState.IsKeyDown(Keys.D0))
-                    level.Player.speedMultiplierStep += 0.05f;
+                    level.Player.groundSpeedMultiplierStep += 0.05f;
             }
 
             if (keyboardState.IsKeyUp(Keys.OemMinus))
@@ -415,7 +420,7 @@ namespace Downpour
                 spriteBatch.Draw(status, center - statusSize / 2, Color.White);
             }
 
-            if (playTesting)
+            if (playTesting&&!paused)
             {
                 fontRenderer.DrawText(spriteBatch, 50, 50, "(1) MoveAcceleration:");
                 fontRenderer.DrawText(spriteBatch, 50, 80, "(2) MaxMoveSpeed:");
@@ -439,7 +444,7 @@ namespace Downpour
                 fontRenderer.DrawText(spriteBatch, offset, 230, level.Player.GravityAcceleration.ToString());
                 fontRenderer.DrawText(spriteBatch, offset, 260, level.Player.MaxFallSpeed.ToString());
                 fontRenderer.DrawText(spriteBatch, offset, 290, level.Player.JumpControlPower.ToString());
-                fontRenderer.DrawText(spriteBatch, offset, 320, level.Player.speedMultiplierStep.ToString());
+                fontRenderer.DrawText(spriteBatch, offset, 320, level.Player.groundSpeedMultiplierStep.ToString());
             }
 
             spriteBatch.End();

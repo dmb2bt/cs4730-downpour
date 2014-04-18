@@ -750,13 +750,13 @@ namespace Downpour
                 layers[i].Draw(spriteBatch, cameraPosition);
 
             // Draw life bar
-            int life = player.Life;
+            float life = player.Life;
             fontRenderer.DrawText(spriteBatch, 35, 14, "Life");
-            Rectangle lifeBar = new Rectangle(85, 20, life / 4, 20);
+            Rectangle lifeBar = new Rectangle(85, 20, (int)life / 4, 20);
             spriteBatch.Draw(layers[0].Texture, lifeBar, Color.Red);
-            int shield = player.ShieldLife;
+            float shield = player.ShieldLife;
             fontRenderer.DrawText(spriteBatch, 5, 37, "Shield");
-            Rectangle shieldBar = new Rectangle(85, 44, shield, 20);
+            Rectangle shieldBar = new Rectangle(85, 44, (int)(shield*.5), 20);
             spriteBatch.Draw(layers[0].Texture, shieldBar, Color.Purple);
 
             fontRenderer.DrawText(spriteBatch, 575, 600, "Fire Pieces: " + (3 - firePieces.Count) + " / 3"); 
