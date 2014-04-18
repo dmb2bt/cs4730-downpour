@@ -35,6 +35,16 @@ namespace Downpour
         }
         AudioManager audio;
 
+        private Texture2D woodHUD;
+        private Texture2D woodCollectedHUD;
+        private Vector2 woodHUDPosition = new Vector2(596, 580);
+        private Texture2D flintHUD;
+        private Texture2D flintCollectedHUD;
+        private Vector2 flintHUDPosition = new Vector2(664, 580);
+        private Texture2D tinderHUD;
+        private Texture2D tinderCollectedHUD;
+        private Vector2 tinderHUDPosition = new Vector2(732, 580);
+
         // Physical structure of the level.
         private Tile[,] tiles;
         private Layer[] layers;
@@ -134,6 +144,13 @@ namespace Downpour
         public override void LoadContent()
         {
             Type = "Level";
+            flintHUD = Content.Load<Texture2D>("Backgrounds/flintholder");
+            flintCollectedHUD = Content.Load<Texture2D>("Backgrounds/flintcollected");
+            tinderHUD = Content.Load<Texture2D>("Backgrounds/tinderholder");
+            tinderCollectedHUD = Content.Load<Texture2D>("Backgrounds/tindercollected");
+            woodHUD = Content.Load<Texture2D>("Backgrounds/woodholder");
+            woodCollectedHUD = Content.Load<Texture2D>("Backgrounds/woodcollected");
+
             rainAnimations = new Animation[3, 5];
             rainTiles = new List<AnimatedTile>();
             rainCols = new int[150];
@@ -694,6 +711,19 @@ namespace Downpour
             // TODO: Need to show piece collected
             audio.playFirePieceSound();
 
+            switch (firepiece.textureName)
+            {
+                case "flint":
+                    flintHUD = flintCollectedHUD;
+                    break;
+                case "tinder":
+                    tinderHUD = tinderCollectedHUD;
+                    break;
+                case "log":
+                    woodHUD = woodCollectedHUD;
+                    break;
+            }
+
             firepiece.OnCollected(collectedBy);
         }
 
@@ -766,7 +796,10 @@ namespace Downpour
             Rectangle shieldBar = new Rectangle(85, 44, (int)(shield*.5), 20);
             spriteBatch.Draw(layers[0].Texture, shieldBar, Color.Purple);
 
-            fontRenderer.DrawText(spriteBatch, 575, 600, "Fire Pieces: " + (3 - firePieces.Count) + " / 3"); 
+            spriteBatch.Draw(woodHUD, woodHUDPosition, Color.White);
+            spriteBatch.Draw(flintHUD, flintHUDPosition, Color.White);
+            spriteBatch.Draw(tinderHUD, tinderHUDPosition, Color.White);
+            //fontRenderer.DrawText(spriteBatch, 575, 600, "Fire Pieces: " + (3 - firePieces.Count) + " / 3"); 
 
             spriteBatch.End();
         }

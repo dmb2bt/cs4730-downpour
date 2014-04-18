@@ -10,7 +10,7 @@ namespace Downpour
     class FirePiece
     {
         private Texture2D texture;
-        private string textureName;
+        public string textureName;
         private const string LOGTEXTURE = "log";
         private const string FLINTTEXTURE = "flint";
         private const string TINDERTEXTURE = "tinder";

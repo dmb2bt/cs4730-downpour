@@ -32,7 +32,6 @@ namespace Downpour
     // Stores the appearance and collision behavior of a tile.
     public class Tile
     {
-        public Texture2D Texture;
         public TileCollision Collision;
         public bool rain;
         public bool water;
@@ -43,25 +42,15 @@ namespace Downpour
         public static readonly Vector2 Size = new Vector2(Width, Height);
 
         // Constructs a new tile.
-        public Tile(Texture2D texture, TileCollision collision, bool rain)
+        public Tile(TileCollision collision, bool rain)
         {
-            Texture = texture;
             Collision = collision;
             this.rain = rain;
             this.water = false;
         }
 
-        public Tile(Texture2D texture, TileCollision collision, bool rain, bool water)
-        {
-            Texture = texture;
-            Collision = collision;
-            this.rain = rain;
-            this.water = water;
-        }
-        // Constructs a new tile.
         public Tile(TileCollision collision, bool rain, bool water)
         {
-            //Texture = texture;
             Collision = collision;
             this.rain = rain;
             this.water = water;

@@ -63,7 +63,7 @@ namespace Downpour
         public void playMenuSong()
         {
             menu.IsLooped = true;
-            menu.Volume = 0.25f;
+            menu.Volume = 0.50f;
             menu.Play();
         }
 
@@ -98,12 +98,12 @@ namespace Downpour
 
         public void incrementRainVolume()
         {
-            rain.Volume += 0.15f;
+            rain.Volume += 0.25f;
         }
 
         public void decrementRainVolume()
         {
-            rain.Volume -= 0.15f;
+            rain.Volume -= 0.25f;
         }
 
         public void playFireSound()

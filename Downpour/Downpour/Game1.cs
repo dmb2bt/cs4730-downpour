@@ -50,7 +50,9 @@ namespace Downpour
         public static Screen currentScreen;
         private Level level;
         private TitleScreen titleScreen;
+        private CreditScreen creditsScreen;
         private bool wasContinuePressed;
+        private bool wasRestartLevelPressed;
 
         // We store our input states so that we only poll once per frame,
         // then we use the same input state wherever needed
@@ -61,6 +63,7 @@ namespace Downpour
         private Texture2D winOverlay;
         private Texture2D diedOverlay;
         private Texture2D winOverallOverlay;
+        private Texture2D pauseScreen;
 
         // The number of levels in the Levels directory of our content. We assume that
         // levels in our content are 0-based and that all numbers under this constant
@@ -106,11 +109,13 @@ namespace Downpour
             soundPlayer = new AudioManager(Content);
 
             LoadTitleScreen();
+            LoadCreditScreen();
             LoadNextLevel();
             currentScreen = titleScreen;
             winOverlay = Content.Load<Texture2D>("you_win");
             winOverallOverlay = Content.Load<Texture2D>("you_win_overall");
             diedOverlay = Content.Load<Texture2D>("you_died");
+            pauseScreen = Content.Load<Texture2D>("pause_screen");
 
             hud = new HUD();
             var fontFilePath = Path.Combine(Content.RootDirectory, "theFont.fnt");
@@ -132,7 +137,7 @@ namespace Downpour
             hasRainStarted = true;
         }
 
-        protected void Restart()
+        public void Restart()
         {
             UnloadContent();
             LoadContent();
@@ -153,6 +158,9 @@ namespace Downpour
                 //    break;
                 case "Level":
                     currentScreen = level;
+                    break;
+                case "CreditScreen":
+                    currentScreen = creditsScreen;
                     break;
             }
 
@@ -268,7 +276,7 @@ namespace Downpour
             // Pause or unpause the game if the P or start buttons are pressed 
             if ((oldKeyboardState.IsKeyUp(Keys.P)&&keyboardState.IsKeyDown(Keys.P))||
                 (oldGamePadState.IsButtonUp(Buttons.Start)&&gamePadState.IsButtonDown(Buttons.Start))&&
-                !currentScreen.Type.Equals("TitleScreen"))
+                !currentScreen.Type.Equals("TitleScreen") && !currentScreen.Type.Equals("CreditScreen"))
             {
                 paused = !paused;
             }
@@ -278,6 +286,14 @@ namespace Downpour
             {
                 Exit();
             }
+
+            bool restartLevelPressed = keyboardState.IsKeyDown(Keys.R) || gamePadState.IsButtonDown(Buttons.B);
+            if (!wasRestartLevelPressed && restartLevelPressed)
+            {
+                if (level.Player.IsAlive && !level.ReachedExit)
+                    ReloadCurrentLevel();
+            }
+
             bool continuePressed =
              keyboardState.IsKeyDown(Keys.Space) ||
                 gamePadState.IsButtonDown(Buttons.Y);
@@ -288,16 +304,14 @@ namespace Downpour
             {
                 if (!level.Player.IsAlive)
                 {
-                    //level.StartNewLife();
                     ReloadCurrentLevel();
                 }
                 else if (level.ReachedExit)
                         LoadNextLevel();
-                    else
-                        ReloadCurrentLevel();   
             }
 
             wasContinuePressed = continuePressed;
+            wasRestartLevelPressed = restartLevelPressed;
 
             if (keyboardState.IsKeyDown(Keys.M) && mReleased)
             {
@@ -331,6 +345,11 @@ namespace Downpour
             titleScreen = new TitleScreen(Services, graphics, Content, soundPlayer);
         }
 
+        private void LoadCreditScreen()
+        {
+            creditsScreen = new CreditScreen(this, Services, graphics, Content, soundPlayer);
+        }
+
         // Loads the next screen
         private void LoadNextLevel()
         {
@@ -340,7 +359,11 @@ namespace Downpour
             if (levelIndex == numberOfLevels || levelIndex < -1)
             {
                 levelIndex = -1;
-                Restart();
+                soundPlayer.stopLevelSong();
+                soundPlayer.stopRainSound();
+                soundPlayer.playMenuSong();
+                currentScreen.Type = "CreditScreen";
+
             }
 
             // Unloads the content for the current level before loading the next one.
@@ -454,8 +477,9 @@ namespace Downpour
         {
             spriteBatch.Begin();
 
-            fontRenderer.DrawText(spriteBatch, 350, 275, "PAUSED");
-            fontRenderer.DrawText(spriteBatch, 225, 300, "press (p) or (start) to continue");
+            spriteBatch.Draw(pauseScreen, new Vector2(80, 128), Color.White);
+            //fontRenderer.DrawText(spriteBatch, 350, 275, "PAUSED");
+            //fontRenderer.DrawText(spriteBatch, 225, 300, "press (p) or (start) to continue");
 
             spriteBatch.End();
         }

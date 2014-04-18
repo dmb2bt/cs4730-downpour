@@ -29,11 +29,9 @@ namespace Downpour
         private Animation invulnerableRunAnimation;
         private Animation invulnerableSuitIdleAnimation;
         private Animation invulnerableSuitRunAnimation;
+        private Animation deathAnimation;
         private SpriteEffects flip = SpriteEffects.None;
         private AnimationPlayer sprite;
-
-        // Audio
-        public SoundEffect footstepSound;
 
         // Current level
         public Level Level
@@ -191,9 +189,7 @@ namespace Downpour
             invulnerableRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_left"), 0.1f, true);
             invulnerableSuitIdleAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_suit_idle"), 0.1f, true);
             invulnerableSuitRunAnimation = new Animation(Level.Content.Load<Texture2D>("Player/invulnerable_suit_left"), 0.1f, true);
-
-            // Load audio
-            footstepSound = Level.Content.Load<SoundEffect>("Sound/footstep"); //*.wav
+            deathAnimation = new Animation(Level.Content.Load<Texture2D>("Player/death"), 0.1f, false);
 
             // Calculate bounds within texture size.
             int width = (int)(normalIdleAnimation.FrameWidth * 1.0);
@@ -291,7 +287,7 @@ namespace Downpour
                     rainLevel++;
                     audio.incrementRainVolume();
                 }
-                else if (rainLevel != 1)
+                else if (up==0 && rainLevel != 1)
                 {
                     rainLevel--;
                     audio.decrementRainVolume();
@@ -606,6 +602,7 @@ namespace Downpour
             if (isAlive)
             {
                 audio.playDeathSound();
+                sprite.PlayAnimation(deathAnimation);
             }
 
             isAlive = false;
