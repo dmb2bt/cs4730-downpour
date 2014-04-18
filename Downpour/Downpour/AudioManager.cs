@@ -32,6 +32,8 @@ namespace Downpour
         SoundEffectInstance rain;
         SoundEffect invulnerabilitySound;
         SoundEffectInstance invulnerability;
+        SoundEffect thunderSound;
+        SoundEffectInstance thunder;
 
         public AudioManager(ContentManager manager)
         {
@@ -58,6 +60,8 @@ namespace Downpour
             rain = rainSound.CreateInstance();
             invulnerabilitySound = content.Load<SoundEffect>("Sound/invulnerability");
             invulnerability = invulnerabilitySound.CreateInstance();
+            thunderSound = content.Load<SoundEffect>("Sound/thunder");
+            thunder = thunderSound.CreateInstance();
         }
 
         public void playMenuSong()
@@ -151,6 +155,12 @@ namespace Downpour
         public void stopInvulnerabilitySound()
         {
             invulnerability.Stop();
+        }
+
+        public void playThunderSound()
+        {
+            thunder.Volume = 0.5f;
+            thunder.Play();
         }
     }
 }

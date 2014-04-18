@@ -51,6 +51,7 @@ namespace Downpour
         private Level level;
         private TitleScreen titleScreen;
         private CreditScreen creditsScreen;
+        private Intro introScreen;
         private bool wasContinuePressed;
         private bool wasRestartLevelPressed;
 
@@ -110,10 +111,11 @@ namespace Downpour
 
             LoadTitleScreen();
             LoadCreditScreen();
+            LoadIntroScreen();
             LoadNextLevel();
             currentScreen = titleScreen;
             winOverlay = Content.Load<Texture2D>("you_win");
-            winOverallOverlay = Content.Load<Texture2D>("you_win_overall");
+            winOverallOverlay = Content.Load<Texture2D>("win_overall_overlay");
             diedOverlay = Content.Load<Texture2D>("you_died");
             pauseScreen = Content.Load<Texture2D>("pause_screen");
 
@@ -161,6 +163,9 @@ namespace Downpour
                     break;
                 case "CreditScreen":
                     currentScreen = creditsScreen;
+                    break;
+                case "Intro":
+                    currentScreen = introScreen;
                     break;
             }
 
@@ -350,6 +355,11 @@ namespace Downpour
             creditsScreen = new CreditScreen(this, Services, graphics, Content, soundPlayer);
         }
 
+        private void LoadIntroScreen()
+        {
+            introScreen = new Intro(this, Services, graphics, Content, soundPlayer);
+        }
+
         // Loads the next screen
         private void LoadNextLevel()
         {
@@ -428,7 +438,7 @@ namespace Downpour
             if (level.ReachedExit)
             {
                 if (levelIndex == numberOfLevels - 1) status = winOverallOverlay;
-                else status = winOverlay;
+                else if (levelIndex != -1) status = winOverlay;
             }
 
             else if (!level.Player.IsAlive)

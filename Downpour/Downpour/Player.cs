@@ -101,8 +101,8 @@ namespace Downpour
         private const Buttons JumpButton = Buttons.A;
 
         // Debugging Values
-        private const bool DEBUG_NO_RAIN_DAMAGE = false;
-        private const bool DEBUG_NO_WATER_DAMAGE = false;
+        private const bool DEBUG_NO_RAIN_DAMAGE = true;
+        private const bool DEBUG_NO_WATER_DAMAGE = true;
 
         // boolean for inverting keys 
         private bool controlsInverted = false;
@@ -287,7 +287,7 @@ namespace Downpour
                     rainLevel++;
                     audio.incrementRainVolume();
                 }
-                else if (up==0 && rainLevel != 1)
+                else if (rainLevel != 1)
                 {
                     rainLevel--;
                     audio.decrementRainVolume();

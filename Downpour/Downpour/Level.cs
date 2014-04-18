@@ -54,6 +54,7 @@ namespace Downpour
         private Animation[,] rainAnimations;
         private int[] rainCols;
         private List<AnimatedTile> rainTiles;
+        private bool drawRain;
 
         // Entities in the level.
         public Player Player
@@ -117,6 +118,7 @@ namespace Downpour
             content = new ContentManager(serviceProvider, "Content");
 
             this.audio = audio;
+            drawRain = true;
 
             var fontFilePath = Path.Combine(Content.RootDirectory, "theFont.fnt");
             var fontFile = FontLoader.Load(fontFilePath);
@@ -699,6 +701,7 @@ namespace Downpour
                 if(!reachedExit)
                     audio.playFireSound();
 
+                
                 Player.OnReachedExit();
                 reachedExit = true;
                 exitAnimation.PlayAnimation(campfireAnimation);

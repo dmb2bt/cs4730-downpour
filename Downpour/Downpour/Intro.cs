@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Downpour
 {
-    class CreditScreen : Screen, IDisposable
+    class Intro : Screen, IDisposable
     {
         private GraphicsDeviceManager graphics;
         private Texture2D texture;
@@ -29,7 +29,7 @@ namespace Downpour
 
         AudioManager audio;
 
-        public CreditScreen(Game1 game, IServiceProvider gameServiceProvider, GraphicsDeviceManager gameGraphics, ContentManager content, AudioManager audio)
+        public Intro(Game1 game, IServiceProvider gameServiceProvider, GraphicsDeviceManager gameGraphics, ContentManager content, AudioManager audio)
             : base()
         {
             this.game = game;
@@ -43,10 +43,9 @@ namespace Downpour
 
         public override void LoadContent()
         {
-            Type = "CreditScreen";
-            texture = Content.Load<Texture2D>("Backgrounds/credits");
+            Type = "Intro";
+            texture = Content.Load<Texture2D>("Backgrounds/intro");
         }
-
         public override void Update(GameTime gameTime, KeyboardState keyboardState, GamePadState gamePadState)
         {
             GetInput(keyboardState, gamePadState);
@@ -61,10 +60,14 @@ namespace Downpour
 
         public void GetInput(KeyboardState keyboardState, GamePadState gamePadState)
         {
-            if (keyboardState.IsKeyDown(Keys.Enter) || gamePadState.Buttons.Start == ButtonState.Pressed)
+            if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.Buttons.A == ButtonState.Pressed)
             {
                 audio.stopMenuSong();
-                game.Restart();
+                audio.playThunderSound();
+                audio.playLevelSong();
+
+                Game1.currentScreen.Type = "Level";
+                
             }
         }
 

@@ -103,10 +103,10 @@ namespace Downpour
         {
             if (keyboardState.IsKeyDown(Keys.Enter) || gamePadState.Buttons.Start == ButtonState.Pressed)
             {
-                audio.stopMenuSong();
+                //audio.stopMenuSong();
 
-                Game1.currentScreen.Type = "Level";
-                audio.playLevelSong();
+                Game1.currentScreen.Type = "Intro";
+                //audio.playLevelSong();
             }
         }
 
